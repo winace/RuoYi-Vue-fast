@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.DictUtils;
+import com.ruoyi.common.utils.redis.DictUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.project.system.domain.SysDictData;
 import com.ruoyi.project.system.domain.SysDictType;

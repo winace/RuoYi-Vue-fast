@@ -70,11 +70,6 @@ public interface ISysConfigService
     public void loadingConfigCache();
 
     /**
-     * 清空参数缓存数据
-     */
-    public void clearConfigCache();
-
-    /**
      * 重置参数缓存数据
      */
     public void resetConfigCache();

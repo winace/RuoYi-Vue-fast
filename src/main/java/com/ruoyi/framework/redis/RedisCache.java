@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import com.ruoyi.common.utils.spring.SpringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisCache
 {
+    private static RedisCache redisCache;
     @Autowired
     public RedisTemplate redisTemplate;
 
@@ -264,5 +267,17 @@ public class RedisCache
     public Collection<String> keys(final String pattern)
     {
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * RedisService Getter
+     *
+     * @return redisService
+     */
+    public static RedisCache getRedisCache() {
+        if (redisCache == null) {
+            redisCache = SpringUtils.getBean(RedisCache.class);
+        }
+        return redisCache;
     }
 }

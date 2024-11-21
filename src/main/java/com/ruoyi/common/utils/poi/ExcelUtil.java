@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.UtilException;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.DictUtils;
+import com.ruoyi.common.utils.redis.DictUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileTypeUtils;
 import com.ruoyi.common.utils.file.FileUtils;
@@ -1562,22 +1562,22 @@ public class ExcelUtil<T>
             Excel[] excels = attrs.value();
             for (Excel attr : excels)
             {
-                if (StringUtils.isNotEmpty(includeFields))
-                {
-                    if (ArrayUtils.contains(this.includeFields, field.getName() + "." + attr.targetAttr())
-                            && (attr != null && (attr.type() == Type.ALL || attr.type() == type)))
+                if (attr != null && (attr.type() == Type.ALL || attr.type() == type)) {
+                    if (StringUtils.isNotEmpty(includeFields))
                     {
-                        field.setAccessible(true);
-                        fields.add(new Object[] { field, attr });
+                        if (ArrayUtils.contains(this.includeFields, field.getName() + "." + attr.targetAttr()))
+                        {
+                            field.setAccessible(true);
+                            fields.add(new Object[] { field, attr });
+                        }
                     }
-                }
-                else
-                {
-                    if (!ArrayUtils.contains(this.excludeFields, field.getName() + "." + attr.targetAttr())
-                            && (attr != null && (attr.type() == Type.ALL || attr.type() == type)))
+                    else
                     {
-                        field.setAccessible(true);
-                        fields.add(new Object[] { field, attr });
+                        if (!ArrayUtils.contains(this.excludeFields, field.getName() + "." + attr.targetAttr()))
+                        {
+                            field.setAccessible(true);
+                            fields.add(new Object[] { field, attr });
+                        }
                     }
                 }
             }

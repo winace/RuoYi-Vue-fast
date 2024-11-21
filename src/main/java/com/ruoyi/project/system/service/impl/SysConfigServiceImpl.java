@@ -1,24 +1,23 @@
 package com.ruoyi.project.system.service.impl;
 
-import java.util.Collection;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.redis.RedisCache;
+import com.ruoyi.common.utils.redis.ConfigUtil;
 import com.ruoyi.project.system.domain.SysConfig;
 import com.ruoyi.project.system.mapper.SysConfigMapper;
 import com.ruoyi.project.system.service.ISysConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
 
 /**
  * 参数配置 服务层实现
- * 
- * @author ruoyi
+ *
+ * @author zoneway
  */
 @Service
 public class SysConfigServiceImpl implements ISysConfigService
@@ -26,8 +25,6 @@ public class SysConfigServiceImpl implements ISysConfigService
     @Autowired
     private SysConfigMapper configMapper;
 
-    @Autowired
-    private RedisCache redisCache;
 
     /**
      * 项目启动时，初始化参数到缓存
@@ -40,7 +37,7 @@ public class SysConfigServiceImpl implements ISysConfigService
 
     /**
      * 查询参数配置信息
-     * 
+     *
      * @param configId 参数配置ID
      * @return 参数配置信息
      */
@@ -54,32 +51,23 @@ public class SysConfigServiceImpl implements ISysConfigService
 
     /**
      * 根据键名查询参数配置信息
-     * 
+     *
      * @param configKey 参数key
      * @return 参数键值
      */
     @Override
     public String selectConfigByKey(String configKey)
     {
-        String configValue = Convert.toStr(redisCache.getCacheObject(getCacheKey(configKey)));
-        if (StringUtils.isNotEmpty(configValue))
-        {
-            return configValue;
-        }
-        SysConfig config = new SysConfig();
-        config.setConfigKey(configKey);
-        SysConfig retConfig = configMapper.selectConfig(config);
-        if (StringUtils.isNotNull(retConfig))
-        {
-            redisCache.setCacheObject(getCacheKey(configKey), retConfig.getConfigValue());
-            return retConfig.getConfigValue();
+        SysConfig config = ConfigUtil.getConfigCache(configKey);
+        if (config != null) {
+            return config.getConfigValue();
         }
         return StringUtils.EMPTY;
     }
 
     /**
      * 获取验证码开关
-     * 
+     *
      * @return true开启，false关闭
      */
     @Override
@@ -95,7 +83,7 @@ public class SysConfigServiceImpl implements ISysConfigService
 
     /**
      * 查询参数配置列表
-     * 
+     *
      * @param config 参数配置信息
      * @return 参数配置集合
      */
@@ -107,7 +95,7 @@ public class SysConfigServiceImpl implements ISysConfigService
 
     /**
      * 新增参数配置
-     * 
+     *
      * @param config 参数配置信息
      * @return 结果
      */
@@ -117,37 +105,31 @@ public class SysConfigServiceImpl implements ISysConfigService
         int row = configMapper.insertConfig(config);
         if (row > 0)
         {
-            redisCache.setCacheObject(getCacheKey(config.getConfigKey()), config.getConfigValue());
+            ConfigUtil.setConfigCache(config);
         }
         return row;
     }
 
     /**
      * 修改参数配置
-     * 
+     *
      * @param config 参数配置信息
      * @return 结果
      */
     @Override
     public int updateConfig(SysConfig config)
     {
-        SysConfig temp = configMapper.selectConfigById(config.getConfigId());
-        if (!StringUtils.equals(temp.getConfigKey(), config.getConfigKey()))
-        {
-            redisCache.deleteObject(getCacheKey(temp.getConfigKey()));
-        }
-
         int row = configMapper.updateConfig(config);
         if (row > 0)
         {
-            redisCache.setCacheObject(getCacheKey(config.getConfigKey()), config.getConfigValue());
+            ConfigUtil.setConfigCache(config);
         }
         return row;
     }
 
     /**
      * 批量删除参数信息
-     * 
+     *
      * @param configIds 需要删除的参数ID
      */
     @Override
@@ -161,7 +143,7 @@ public class SysConfigServiceImpl implements ISysConfigService
                 throw new ServiceException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
             configMapper.deleteConfigById(configId);
-            redisCache.deleteObject(getCacheKey(config.getConfigKey()));
+            ConfigUtil.removeConfigCache(config.getConfigKey());
         }
     }
 
@@ -172,20 +154,7 @@ public class SysConfigServiceImpl implements ISysConfigService
     public void loadingConfigCache()
     {
         List<SysConfig> configsList = configMapper.selectConfigList(new SysConfig());
-        for (SysConfig config : configsList)
-        {
-            redisCache.setCacheObject(getCacheKey(config.getConfigKey()), config.getConfigValue());
-        }
-    }
-
-    /**
-     * 清空参数缓存数据
-     */
-    @Override
-    public void clearConfigCache()
-    {
-        Collection<String> keys = redisCache.keys(CacheConstants.SYS_CONFIG_KEY + "*");
-        redisCache.deleteObject(keys);
+        ConfigUtil.setConfigListCache(configsList);
     }
 
     /**
@@ -194,13 +163,13 @@ public class SysConfigServiceImpl implements ISysConfigService
     @Override
     public void resetConfigCache()
     {
-        clearConfigCache();
+        ConfigUtil.clearConfigCache();
         loadingConfigCache();
     }
 
     /**
      * 校验参数键名是否唯一
-     * 
+     *
      * @param config 参数配置信息
      * @return 结果
      */
@@ -216,14 +185,4 @@ public class SysConfigServiceImpl implements ISysConfigService
         return UserConstants.UNIQUE;
     }
 
-    /**
-     * 设置cache key
-     * 
-     * @param configKey 参数键
-     * @return 缓存键key
-     */
-    private String getCacheKey(String configKey)
-    {
-        return CacheConstants.SYS_CONFIG_KEY + configKey;
-    }
 }

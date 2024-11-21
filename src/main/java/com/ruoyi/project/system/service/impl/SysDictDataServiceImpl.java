@@ -3,7 +3,7 @@ package com.ruoyi.project.system.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.common.utils.DictUtils;
+import com.ruoyi.common.utils.redis.DictUtils;
 import com.ruoyi.project.system.domain.SysDictData;
 import com.ruoyi.project.system.mapper.SysDictDataMapper;
 import com.ruoyi.project.system.service.ISysDictDataService;
