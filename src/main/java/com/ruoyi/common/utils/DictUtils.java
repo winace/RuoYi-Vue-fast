@@ -1,12 +1,18 @@
 package com.ruoyi.common.utils;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.alibaba.fastjson2.JSONArray;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.framework.redis.RedisCache;
 import com.ruoyi.project.system.domain.SysDictData;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * 字典工具类
@@ -205,6 +211,72 @@ public class DictUtils
             propertyString.append(dict.getDictLabel()).append(SEPARATOR);
         }
         return StringUtils.stripEnd(propertyString.toString(), SEPARATOR);
+    }
+
+    /**
+     * 获取字典 value-label map
+     *
+     * @param key type
+     * @return 字典 value-label map
+     */
+    public static Map<String, String> getDictMap(String key) {
+        List<SysDictData> dictDataList = getDictCache(key);
+        if (CollectionUtils.isNotEmpty(dictDataList)) {
+            return dictDataList.stream().collect(Collectors.toMap(SysDictData::getDictValue, SysDictData::getDictLabel));
+        }
+        return null;
+    }
+
+    /**
+     * 获取字典 label-value map
+     *
+     * @param key type
+     * @return 字典 label-value map
+     */
+    public static Map<String, String> getLabelValueDictMap(String key) {
+        List<SysDictData> dictDataList = getDictCache(key);
+        if (CollectionUtils.isNotEmpty(dictDataList)) {
+            return dictDataList.stream().collect(Collectors.toMap(SysDictData::getDictLabel, SysDictData::getDictValue));
+        }
+        return null;
+    }
+
+    /**
+     * 获取多个字典 value-label map
+     *
+     * @param key type
+     * @return 字典 {key:{value:label},...} map
+     */
+    public static Map<String, Map<String, String>> getMultiDictMap(String... key) {
+        Map<String, Map<String, String>> map = new HashMap<>();
+        if (ArrayUtils.isNotEmpty(key)) {
+            for (String k : key) {
+                List<SysDictData> dictDataList = getDictCache(k);
+                if (CollectionUtils.isNotEmpty(dictDataList)) {
+                    map.put(k, dictDataList.stream().collect(Collectors.toMap(SysDictData::getDictValue, SysDictData::getDictLabel)));
+                }
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 获取多个字典 label-value map
+     *
+     * @param key type
+     * @return 字典 {key:{label:value},...} map
+     */
+    public static Map<String, Map<String, String>> getMultiLabelValueDictMap(String... key) {
+        Map<String, Map<String, String>> map = new HashMap<>();
+        if (ArrayUtils.isNotEmpty(key)) {
+            for (String k : key) {
+                List<SysDictData> dictDataList = getDictCache(k);
+                if (CollectionUtils.isNotEmpty(dictDataList)) {
+                    map.put(k, dictDataList.stream().collect(Collectors.toMap(SysDictData::getDictLabel, SysDictData::getDictValue)));
+                }
+            }
+        }
+        return map;
     }
 
     /**

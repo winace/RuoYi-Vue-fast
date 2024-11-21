@@ -1,6 +1,7 @@
 package com.ruoyi.framework.web.page;
 
-import java.io.Serializable;
+import com.ruoyi.framework.web.domain.R;
+
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * 
  * @author ruoyi
  */
-public class TableDataInfo implements Serializable
+public class TableDataInfo<T> extends R<T>
 {
     private static final long serialVersionUID = 1L;
 
@@ -16,13 +17,8 @@ public class TableDataInfo implements Serializable
     private long total;
 
     /** 列表数据 */
-    private List<?> rows;
+    private List<T> rows;
 
-    /** 消息状态码 */
-    private int code;
-
-    /** 消息内容 */
-    private String msg;
 
     /**
      * 表格数据对象
@@ -37,7 +33,7 @@ public class TableDataInfo implements Serializable
      * @param list 列表数据
      * @param total 总记录数
      */
-    public TableDataInfo(List<?> list, int total)
+    public TableDataInfo(List<T> list, int total)
     {
         this.rows = list;
         this.total = total;
@@ -53,33 +49,13 @@ public class TableDataInfo implements Serializable
         this.total = total;
     }
 
-    public List<?> getRows()
+    public List<T> getRows()
     {
         return rows;
     }
 
-    public void setRows(List<?> rows)
+    public void setRows(List<T> rows)
     {
         this.rows = rows;
-    }
-
-    public int getCode()
-    {
-        return code;
-    }
-
-    public void setCode(int code)
-    {
-        this.code = code;
-    }
-
-    public String getMsg()
-    {
-        return msg;
-    }
-
-    public void setMsg(String msg)
-    {
-        this.msg = msg;
     }
 }

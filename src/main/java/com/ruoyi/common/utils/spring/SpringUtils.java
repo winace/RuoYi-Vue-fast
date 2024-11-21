@@ -1,5 +1,6 @@
 package com.ruoyi.common.utils.spring;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -7,21 +8,31 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.utils.StringUtils;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * spring工具类 方便在非spring管理环境中获取bean
  * 
  * @author ruoyi
  */
+@Slf4j
 @Component
-public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationContextAware 
+public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationContextAware, EnvironmentAware
 {
     /** Spring应用上下文环境 */
     private static ConfigurableListableBeanFactory beanFactory;
 
     private static ApplicationContext applicationContext;
+
+    private static Environment environment;
+
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException 
@@ -33,6 +44,11 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException 
     {
         SpringUtils.applicationContext = applicationContext;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        SpringUtils.environment = environment;
     }
 
     /**
@@ -145,6 +161,16 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
     }
 
     /**
+     * 判断当前的环境配置是否是生产
+     *
+     * @return 是否是生产环境
+     */
+    public static boolean isProd() {
+        String activeProfile = getActiveProfile();
+        return StringUtils.isNotBlank(activeProfile) && "prod".equals(activeProfile);
+    }
+
+    /**
      * 获取配置文件中的值
      *
      * @param key 配置文件的key
@@ -154,5 +180,29 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
     public static String getRequiredProperty(String key)
     {
         return applicationContext.getEnvironment().getRequiredProperty(key);
+    }
+
+    /**
+     * 获取spring配置值
+     *
+     * @param key key
+     * @return 值
+     */
+    public static Optional<String> getValue(String key) {
+        String config = environment.getProperty(key);
+        return Objects.isNull(config) ? Optional.empty() : Optional.of(config);
+    }
+
+    /**
+     * 获取spring配置值
+     *
+     * @param key key
+     */
+    public static void getValue(String key, Consumer<String> consumer) {
+        Optional<String> config = getValue(key);
+        if (!config.isPresent()) {
+            log.warn("application config, get config by key fail, key: {}", key);
+        }
+        config.ifPresent(consumer);
     }
 }

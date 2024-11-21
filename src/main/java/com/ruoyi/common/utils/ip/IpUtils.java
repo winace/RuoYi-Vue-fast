@@ -1,10 +1,16 @@
 package com.ruoyi.common.utils.ip;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
+import lombok.SneakyThrows;
+import org.apache.commons.compress.utils.Lists;
 
 /**
  * 获取IP方法
@@ -245,6 +251,26 @@ public class IpUtils
         return "未知";
     }
 
+    @SneakyThrows
+    public static List<String> getMultipleIps() {
+        List<String> ipList = Lists.newArrayList();
+        Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+        while (networkInterfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = networkInterfaces.nextElement();
+            Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+            while (inetAddresses.hasMoreElements()) {
+                InetAddress inetAddress = inetAddresses.nextElement();
+                if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                    String ip = inetAddress.getHostAddress();
+                    if (internalIp(ip)) {
+                        ipList.add(ip);
+                    }
+                }
+            }
+        }
+        return ipList;
+    }
+
     /**
      * 从多级反向代理中获得第一个非unknown IP地址
      *
@@ -304,7 +330,7 @@ public class IpUtils
         String[] s1 = ipWildCard.split("\\.");
         String[] s2 = ip.split("\\.");
         boolean isMatchedSeg = true;
-        for (int i = 0; i < s1.length && !s1[i].equals("*"); i++)
+        for (int i = 0; i < s1.length && !"*".equals(s1[i]); i++)
         {
             if (!s1[i].equals(s2[i]))
             {
