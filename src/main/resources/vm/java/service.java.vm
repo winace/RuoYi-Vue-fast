@@ -1,61 +1,36 @@
 package ${packageName}.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+#if($table.tree)
 import java.util.List;
+#end
 import ${packageName}.domain.${ClassName};
 
 /**
- * ${functionName}Service接口
+ * ${functionName} 业务接口
  * 
  * @author ${author}
- * @date ${datetime}
+ * @since  ${datetime}
  */
-public interface I${ClassName}Service 
-{
+public interface I${ClassName}Service extends IService<${ClassName}> {
+#if($table.crud || $table.sub)
     /**
-     * 查询${functionName}
-     * 
-     * @param ${pkColumn.javaField} ${functionName}主键
-     * @return ${functionName}
-     */
-    public ${ClassName} select${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField});
-
-    /**
-     * 查询${functionName}列表
-     * 
+     * 查询${functionName}分页列表
+     *
+     * @param pageDto 分页参数
      * @param ${className} ${functionName}
      * @return ${functionName}集合
      */
-    public List<${ClassName}> select${ClassName}List(${ClassName} ${className});
-
+    IPage<${ClassName}> queryPage(Page<${ClassName}> pageDto, ${ClassName} ${className});
+#elseif($table.tree)
     /**
-     * 新增${functionName}
-     * 
+     * 查询${functionName}列表
+     *
      * @param ${className} ${functionName}
-     * @return 结果
+     * @return ${functionName}集合
      */
-    public int insert${ClassName}(${ClassName} ${className});
-
-    /**
-     * 修改${functionName}
-     * 
-     * @param ${className} ${functionName}
-     * @return 结果
-     */
-    public int update${ClassName}(${ClassName} ${className});
-
-    /**
-     * 批量删除${functionName}
-     * 
-     * @param ${pkColumn.javaField}s 需要删除的${functionName}主键集合
-     * @return 结果
-     */
-    public int delete${ClassName}By${pkColumn.capJavaField}s(${pkColumn.javaType}[] ${pkColumn.javaField}s);
-
-    /**
-     * 删除${functionName}信息
-     * 
-     * @param ${pkColumn.javaField} ${functionName}主键
-     * @return 结果
-     */
-    public int delete${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField});
+    List<${ClassName}> queryList(${ClassName} ${className});
+#end
 }

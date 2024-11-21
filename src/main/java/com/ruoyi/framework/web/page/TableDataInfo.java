@@ -1,5 +1,8 @@
 package com.ruoyi.framework.web.page;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.pagehelper.Page;
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.framework.web.domain.R;
 
 import java.util.List;
@@ -38,6 +41,31 @@ public class TableDataInfo<T> extends R<T>
         this.rows = list;
         this.total = total;
     }
+
+    /**
+     * 表格数据对象
+     *
+     * @param page 分页数据
+     */
+    @SuppressWarnings("unchecked")
+    public TableDataInfo(Object page) {
+        setCode(HttpStatus.SUCCESS);
+        setMsg("查询成功");
+        if (page instanceof IPage) {
+            IPage<T> page0 = (IPage<T>) page;
+            setRows(page0.getRecords());
+            setTotal(page0.getTotal());
+        } else if (page instanceof Page) {
+            Page<T> page1 = (Page<T>) page;
+            setRows(page1);
+            setTotal(page1.getTotal());
+        } else {
+            List<T> list = (List<T>) page;
+            setRows(list);
+            setTotal(list.size());
+        }
+    }
+
 
     public long getTotal()
     {

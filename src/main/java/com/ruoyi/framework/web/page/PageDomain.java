@@ -1,5 +1,6 @@
 package com.ruoyi.framework.web.page;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.utils.StringUtils;
 
 /**
@@ -9,6 +10,9 @@ import com.ruoyi.common.utils.StringUtils;
  */
 public class PageDomain
 {
+    private static final Long DEFAULT_PAGE_NUM = 1L;
+    private static final Long DEFAULT_PAGE_SIZE = 10L;
+
     /** 当前记录起始索引 */
     private Integer pageNum;
 
@@ -23,6 +27,27 @@ public class PageDomain
 
     /** 分页参数合理化 */
     private Boolean reasonable = true;
+
+
+    /**
+     * 构造mybatis-plus的分页参数
+     *
+     * @param page 原始参数
+     * @param <T>  泛型
+     * @return mybatis-plus的分页参数
+     */
+    public static <T> Page<T> of(PageDomain page) {
+        if (page == null) {
+            return Page.of(DEFAULT_PAGE_NUM, DEFAULT_PAGE_SIZE);
+        }
+        if (page.getPageNum() == null || page.getPageNum() < DEFAULT_PAGE_NUM) {
+            page.setPageNum(DEFAULT_PAGE_NUM.intValue());
+        }
+        if (page.getPageSize() == null || page.getPageSize() < DEFAULT_PAGE_NUM) {
+            page.setPageSize(DEFAULT_PAGE_SIZE.intValue());
+        }
+        return Page.of(page.getPageNum(), page.getPageSize());
+    }
 
     public String getOrderBy()
     {
