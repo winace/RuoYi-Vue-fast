@@ -3,36 +3,37 @@
 -- ----------------------------
 drop table if exists sys_dept;
 create table sys_dept (
-  dept_id           bigint(20)      not null auto_increment    comment '部门id',
-  parent_id         bigint(20)      default 0                  comment '父部门id',
-  ancestors         varchar(50)     default ''                 comment '祖级列表',
-  dept_name         varchar(30)     default ''                 comment '部门名称',
-  order_num         int(4)          default 0                  comment '显示顺序',
-  leader            varchar(20)     default null               comment '负责人',
-  phone             varchar(11)     default null               comment '联系电话',
-  email             varchar(50)     default null               comment '邮箱',
-  status            char(1)         default '0'                comment '部门状态（0正常 1停用）',
-  del_flag          char(1)         default '0'                comment '删除标志（0代表存在 2代表删除）',
-  create_by         varchar(64)     default ''                 comment '创建者',
-  create_time 	    datetime                                   comment '创建时间',
-  update_by         varchar(64)     default ''                 comment '更新者',
-  update_time       datetime                                   comment '更新时间',
+  dept_id           bigint(20)      not null auto_increment     comment '部门id',
+  parent_id         bigint(20)      default 0                   comment '父部门id',
+  ancestors         varchar(50)     default ''                  comment '祖级列表',
+  dept_name         varchar(30)     default ''                  comment '部门名称',
+  order_num         int(4)          default 0                   comment '显示顺序',
+  leader            varchar(20)     default null                comment '负责人',
+  phone             varchar(11)     default null                comment '联系电话',
+  email             varchar(50)     default null                comment '邮箱',
+  status            char(1)         default '0'                 comment '部门状态（0正常 1停用）',
+  del_flag          char(1)         default '0'                 comment '删除标志（0代表存在 2代表删除）',
+  create_by         varchar(64)     default ''                  comment '创建者',
+  create_time       datetime                                    comment '创建时间',
+  update_by         varchar(64)     default ''                  comment '更新者',
+  update_time       datetime                                    comment '更新时间',
+  tenant_id         bigint(20)      NOT NULL                    COMMENT '租户ID',
   primary key (dept_id)
 ) engine=innodb auto_increment=200 comment = '部门表';
 
 -- ----------------------------
 -- 初始化-部门表数据
 -- ----------------------------
-insert into sys_dept values(100,  0,   '0',          '若依科技',   0, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(101,  100, '0,100',      '深圳总公司', 1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(102,  100, '0,100',      '长沙分公司', 2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(103,  101, '0,100,101',  '研发部门',   1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(104,  101, '0,100,101',  '市场部门',   2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(105,  101, '0,100,101',  '测试部门',   3, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(106,  101, '0,100,101',  '财务部门',   4, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(107,  101, '0,100,101',  '运维部门',   5, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(108,  102, '0,100,102',  '市场部门',   1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(109,  102, '0,100,102',  '财务部门',   2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+insert into sys_dept values(100,  0,   '0',          '若依科技',   0, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(101,  100, '0,100',      '深圳总公司', 1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(102,  100, '0,100',      '长沙分公司', 2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(103,  101, '0,100,101',  '研发部门',   1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(104,  101, '0,100,101',  '市场部门',   2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(105,  101, '0,100,101',  '测试部门',   3, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(106,  101, '0,100,101',  '财务部门',   4, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(107,  101, '0,100,101',  '运维部门',   5, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(108,  102, '0,100,102',  '市场部门',   1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
+insert into sys_dept values(109,  102, '0,100,102',  '财务部门',   2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null, 9999);
 
 
 -- ----------------------------
@@ -40,33 +41,36 @@ insert into sys_dept values(109,  102, '0,100,102',  '财务部门',   2, '若�
 -- ----------------------------
 drop table if exists sys_user;
 create table sys_user (
-  user_id           bigint(20)      not null auto_increment    comment '用户ID',
-  dept_id           bigint(20)      default null               comment '部门ID',
-  user_name         varchar(30)     not null                   comment '用户账号',
-  nick_name         varchar(30)     not null                   comment '用户昵称',
-  user_type         varchar(2)      default '00'               comment '用户类型（00系统用户）',
-  email             varchar(50)     default ''                 comment '用户邮箱',
-  phonenumber       varchar(11)     default ''                 comment '手机号码',
-  sex               char(1)         default '0'                comment '用户性别（0男 1女 2未知）',
-  avatar            varchar(100)    default ''                 comment '头像地址',
-  password          varchar(100)    default ''                 comment '密码',
-  status            char(1)         default '0'                comment '帐号状态（0正常 1停用）',
-  del_flag          char(1)         default '0'                comment '删除标志（0代表存在 2代表删除）',
-  login_ip          varchar(128)    default ''                 comment '最后登录IP',
-  login_date        datetime                                   comment '最后登录时间',
-  create_by         varchar(64)     default ''                 comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         varchar(64)     default ''                 comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(500)    default null               comment '备注',
-  primary key (user_id)
+  user_id           bigint(20)      not null auto_increment     comment '用户ID',
+  dept_id           bigint(20)      default null                comment '部门ID',
+  user_name         varchar(30)     not null                    comment '用户账号',
+  nick_name         varchar(30)     not null                    comment '用户昵称',
+  user_type         varchar(2)      default '00'                comment '用户类型（00系统用户）',
+  email             varchar(50)     default ''                  comment '用户邮箱',
+  phonenumber       varchar(11)     default ''                  comment '手机号码',
+  sex               char(1)         default '0'                 comment '用户性别（0男 1女 2未知）',
+  avatar            varchar(100)    default ''                  comment '头像地址',
+  password          varchar(100)    default ''                  comment '密码',
+  status            char(1)         default '0'                 comment '帐号状态（0正常 1停用）',
+  del_flag          char(1)         default '0'                 comment '删除标志（0代表存在 2代表删除）',
+  login_ip          varchar(128)    default ''                  comment '最后登录IP',
+  login_date        datetime                                    comment '最后登录时间',
+  create_by         varchar(64)     default ''                  comment '创建者',
+  create_time       datetime                                    comment '创建时间',
+  update_by         varchar(64)     default ''                  comment '更新者',
+  update_time       datetime                                    comment '更新时间',
+  remark            varchar(500)    default null                comment '备注',
+  tenant_id         bigint(20)      NOT NULL                    COMMENT '租户ID',
+  primary key (user_id),
+  KEY idx_user_tenant(tenant_id) USING BTREE,
+  KEY idx_user_name(user_name) USING BTREE
 ) engine=innodb auto_increment=100 comment = '用户信息表';
 
 -- ----------------------------
 -- 初始化-用户信息表数据
 -- ----------------------------
-insert into sys_user values(1,  103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', null, '管理员');
-insert into sys_user values(2,  105, 'ry',    '若依', '00', 'ry@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', null, '测试员');
+insert into sys_user values(1,  103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', null, '管理员', 9999);
+insert into sys_user values(2,  105, 'ry',    '若依', '00', 'ry@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', null, '测试员', 9999);
 
 
 -- ----------------------------
@@ -75,26 +79,28 @@ insert into sys_user values(2,  105, 'ry',    '若依', '00', 'ry@qq.com',  '156
 drop table if exists sys_post;
 create table sys_post
 (
-  post_id       bigint(20)      not null auto_increment    comment '岗位ID',
-  post_code     varchar(64)     not null                   comment '岗位编码',
-  post_name     varchar(50)     not null                   comment '岗位名称',
-  post_sort     int(4)          not null                   comment '显示顺序',
-  status        char(1)         not null                   comment '状态（0正常 1停用）',
-  create_by     varchar(64)     default ''                 comment '创建者',
-  create_time   datetime                                   comment '创建时间',
-  update_by     varchar(64)     default ''			       comment '更新者',
-  update_time   datetime                                   comment '更新时间',
-  remark        varchar(500)    default null               comment '备注',
-  primary key (post_id)
+  post_id       bigint(20)      not null auto_increment     comment '岗位ID',
+  post_code     varchar(64)     not null                    comment '岗位编码',
+  post_name     varchar(50)     not null                    comment '岗位名称',
+  post_sort     int(4)          not null                    comment '显示顺序',
+  status        char(1)         not null                    comment '状态（0正常 1停用）',
+  create_by     varchar(64)     default ''                  comment '创建者',
+  create_time   datetime                                    comment '创建时间',
+  update_by     varchar(64)     default ''                  comment '更新者',
+  update_time   datetime                                    comment '更新时间',
+  remark        varchar(500)    default null                comment '备注',
+  tenant_id     bigint(20)      NOT NULL                    COMMENT '租户ID',
+  primary key (post_id),
+  KEY idx_post_tenant(tenant_id) USING BTREE
 ) engine=innodb comment = '岗位信息表';
 
 -- ----------------------------
 -- 初始化-岗位信息表数据
 -- ----------------------------
-insert into sys_post values(1, 'ceo',  '董事长',    1, '0', 'admin', sysdate(), '', null, '');
-insert into sys_post values(2, 'se',   '项目经理',  2, '0', 'admin', sysdate(), '', null, '');
-insert into sys_post values(3, 'hr',   '人力资源',  3, '0', 'admin', sysdate(), '', null, '');
-insert into sys_post values(4, 'user', '普通员工',  4, '0', 'admin', sysdate(), '', null, '');
+insert into sys_post values(1, 'ceo',  '董事长',    1, '0', 'admin', sysdate(), '', null, '', 9999);
+insert into sys_post values(2, 'se',   '项目经理',  2, '0', 'admin', sysdate(), '', null, '', 9999);
+insert into sys_post values(3, 'hr',   '人力资源',  3, '0', 'admin', sysdate(), '', null, '', 9999);
+insert into sys_post values(4, 'user', '普通员工',  4, '0', 'admin', sysdate(), '', null, '', 9999);
 
 
 -- ----------------------------
@@ -102,28 +108,31 @@ insert into sys_post values(4, 'user', '普通员工',  4, '0', 'admin', sysdate
 -- ----------------------------
 drop table if exists sys_role;
 create table sys_role (
-  role_id              bigint(20)      not null auto_increment    comment '角色ID',
-  role_name            varchar(30)     not null                   comment '角色名称',
-  role_key             varchar(100)    not null                   comment '角色权限字符串',
-  role_sort            int(4)          not null                   comment '显示顺序',
-  data_scope           char(1)         default '1'                comment '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
-  menu_check_strictly  tinyint(1)      default 1                  comment '菜单树选择项是否关联显示',
-  dept_check_strictly  tinyint(1)      default 1                  comment '部门树选择项是否关联显示',
-  status               char(1)         not null                   comment '角色状态（0正常 1停用）',
-  del_flag             char(1)         default '0'                comment '删除标志（0代表存在 2代表删除）',
-  create_by            varchar(64)     default ''                 comment '创建者',
-  create_time          datetime                                   comment '创建时间',
-  update_by            varchar(64)     default ''                 comment '更新者',
-  update_time          datetime                                   comment '更新时间',
-  remark               varchar(500)    default null               comment '备注',
-  primary key (role_id)
+  role_id               bigint(20)      not null auto_increment     comment '角色ID',
+  role_name             varchar(30)     not null                    comment '角色名称',
+  role_key              varchar(100)    not null                    comment '角色权限字符串',
+  role_sort             int(4)          not null                    comment '显示顺序',
+  data_scope            char(1)         default '1'                 comment '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
+  menu_check_strictly   tinyint(1)      default 1                   comment '菜单树选择项是否关联显示',
+  dept_check_strictly   tinyint(1)      default 1                   comment '部门树选择项是否关联显示',
+  status                char(1)         not null                    comment '角色状态（0正常 1停用）',
+  admin_role            int(1)          NOT NULL DEFAULT '0'        COMMENT '是否管理员角色（0 不是 1是）',
+  del_flag              char(1)         default '0'                 comment '删除标志（0代表存在 2代表删除）',
+  create_by             varchar(64)     default ''                  comment '创建者',
+  create_time           datetime                                    comment '创建时间',
+  update_by             varchar(64)     default ''                  comment '更新者',
+  update_time           datetime                                    comment '更新时间',
+  remark                varchar(500)    default null                comment '备注',
+  tenant_id             bigint(20)      NOT NULL                    COMMENT '租户ID',
+  primary key (role_id),
+  KEY idx_role_tenant(tenant_id) USING BTREE
 ) engine=innodb auto_increment=100 comment = '角色信息表';
 
 -- ----------------------------
 -- 初始化-角色信息表数据
 -- ----------------------------
-insert into sys_role values('1', '超级管理员',  'admin',  1, 1, 1, 1, '0', '0', 'admin', sysdate(), '', null, '超级管理员');
-insert into sys_role values('2', '普通角色',    'common', 2, 2, 1, 1, '0', '0', 'admin', sysdate(), '', null, '普通角色');
+insert into sys_role values('1', '超级管理员',  'admin',  1, 1, 1, 1, '0', 1, '0', 'admin', sysdate(), '', null, '超级管理员', 9999);
+insert into sys_role values('2', '普通角色',    'common', 2, 2, 1, 1, '0', 0, '0', 'admin', sysdate(), '', null, '普通角色', 9999);
 
 
 -- ----------------------------
@@ -267,14 +276,16 @@ drop table if exists sys_user_role;
 create table sys_user_role (
   user_id   bigint(20) not null comment '用户ID',
   role_id   bigint(20) not null comment '角色ID',
-  primary key(user_id, role_id)
+  tenant_id bigint(20) NOT NULL COMMENT '租户ID',
+  primary key(user_id, role_id),
+  KEY idx_user_role_tenant(tenant_id) USING BTREE
 ) engine=innodb comment = '用户和角色关联表';
 
 -- ----------------------------
 -- 初始化-用户和角色关联表数据
 -- ----------------------------
-insert into sys_user_role values ('1', '1');
-insert into sys_user_role values ('2', '2');
+insert into sys_user_role values ('1', '1', 9999);
+insert into sys_user_role values ('2', '2', 9999);
 
 
 -- ----------------------------
@@ -284,97 +295,99 @@ drop table if exists sys_role_menu;
 create table sys_role_menu (
   role_id   bigint(20) not null comment '角色ID',
   menu_id   bigint(20) not null comment '菜单ID',
-  primary key(role_id, menu_id)
+  tenant_id bigint(20) NOT NULL COMMENT '租户ID',
+  primary key(role_id, menu_id),
+  KEY idx_role_menu_tenant(tenant_id) USING BTREE
 ) engine=innodb comment = '角色和菜单关联表';
 
 -- ----------------------------
 -- 初始化-角色和菜单关联表数据
 -- ----------------------------
-insert into sys_role_menu values ('2', '1');
-insert into sys_role_menu values ('2', '2');
-insert into sys_role_menu values ('2', '3');
-insert into sys_role_menu values ('2', '4');
-insert into sys_role_menu values ('2', '100');
-insert into sys_role_menu values ('2', '101');
-insert into sys_role_menu values ('2', '102');
-insert into sys_role_menu values ('2', '103');
-insert into sys_role_menu values ('2', '104');
-insert into sys_role_menu values ('2', '105');
-insert into sys_role_menu values ('2', '106');
-insert into sys_role_menu values ('2', '107');
-insert into sys_role_menu values ('2', '108');
-insert into sys_role_menu values ('2', '109');
-insert into sys_role_menu values ('2', '110');
-insert into sys_role_menu values ('2', '111');
-insert into sys_role_menu values ('2', '112');
-insert into sys_role_menu values ('2', '113');
-insert into sys_role_menu values ('2', '114');
-insert into sys_role_menu values ('2', '115');
-insert into sys_role_menu values ('2', '116');
-insert into sys_role_menu values ('2', '117');
-insert into sys_role_menu values ('2', '500');
-insert into sys_role_menu values ('2', '501');
-insert into sys_role_menu values ('2', '1000');
-insert into sys_role_menu values ('2', '1001');
-insert into sys_role_menu values ('2', '1002');
-insert into sys_role_menu values ('2', '1003');
-insert into sys_role_menu values ('2', '1004');
-insert into sys_role_menu values ('2', '1005');
-insert into sys_role_menu values ('2', '1006');
-insert into sys_role_menu values ('2', '1007');
-insert into sys_role_menu values ('2', '1008');
-insert into sys_role_menu values ('2', '1009');
-insert into sys_role_menu values ('2', '1010');
-insert into sys_role_menu values ('2', '1011');
-insert into sys_role_menu values ('2', '1012');
-insert into sys_role_menu values ('2', '1013');
-insert into sys_role_menu values ('2', '1014');
-insert into sys_role_menu values ('2', '1015');
-insert into sys_role_menu values ('2', '1016');
-insert into sys_role_menu values ('2', '1017');
-insert into sys_role_menu values ('2', '1018');
-insert into sys_role_menu values ('2', '1019');
-insert into sys_role_menu values ('2', '1020');
-insert into sys_role_menu values ('2', '1021');
-insert into sys_role_menu values ('2', '1022');
-insert into sys_role_menu values ('2', '1023');
-insert into sys_role_menu values ('2', '1024');
-insert into sys_role_menu values ('2', '1025');
-insert into sys_role_menu values ('2', '1026');
-insert into sys_role_menu values ('2', '1027');
-insert into sys_role_menu values ('2', '1028');
-insert into sys_role_menu values ('2', '1029');
-insert into sys_role_menu values ('2', '1030');
-insert into sys_role_menu values ('2', '1031');
-insert into sys_role_menu values ('2', '1032');
-insert into sys_role_menu values ('2', '1033');
-insert into sys_role_menu values ('2', '1034');
-insert into sys_role_menu values ('2', '1035');
-insert into sys_role_menu values ('2', '1036');
-insert into sys_role_menu values ('2', '1037');
-insert into sys_role_menu values ('2', '1038');
-insert into sys_role_menu values ('2', '1039');
-insert into sys_role_menu values ('2', '1040');
-insert into sys_role_menu values ('2', '1041');
-insert into sys_role_menu values ('2', '1042');
-insert into sys_role_menu values ('2', '1043');
-insert into sys_role_menu values ('2', '1044');
-insert into sys_role_menu values ('2', '1045');
-insert into sys_role_menu values ('2', '1046');
-insert into sys_role_menu values ('2', '1047');
-insert into sys_role_menu values ('2', '1048');
-insert into sys_role_menu values ('2', '1049');
-insert into sys_role_menu values ('2', '1050');
-insert into sys_role_menu values ('2', '1051');
-insert into sys_role_menu values ('2', '1052');
-insert into sys_role_menu values ('2', '1053');
-insert into sys_role_menu values ('2', '1054');
-insert into sys_role_menu values ('2', '1055');
-insert into sys_role_menu values ('2', '1056');
-insert into sys_role_menu values ('2', '1057');
-insert into sys_role_menu values ('2', '1058');
-insert into sys_role_menu values ('2', '1059');
-insert into sys_role_menu values ('2', '1060');
+insert into sys_role_menu values ('2', '1', 9999);
+insert into sys_role_menu values ('2', '2', 9999);
+insert into sys_role_menu values ('2', '3', 9999);
+insert into sys_role_menu values ('2', '4', 9999);
+insert into sys_role_menu values ('2', '100', 9999);
+insert into sys_role_menu values ('2', '101', 9999);
+insert into sys_role_menu values ('2', '102', 9999);
+insert into sys_role_menu values ('2', '103', 9999);
+insert into sys_role_menu values ('2', '104', 9999);
+insert into sys_role_menu values ('2', '105', 9999);
+insert into sys_role_menu values ('2', '106', 9999);
+insert into sys_role_menu values ('2', '107', 9999);
+insert into sys_role_menu values ('2', '108', 9999);
+insert into sys_role_menu values ('2', '109', 9999);
+insert into sys_role_menu values ('2', '110', 9999);
+insert into sys_role_menu values ('2', '111', 9999);
+insert into sys_role_menu values ('2', '112', 9999);
+insert into sys_role_menu values ('2', '113', 9999);
+insert into sys_role_menu values ('2', '114', 9999);
+insert into sys_role_menu values ('2', '115', 9999);
+insert into sys_role_menu values ('2', '116', 9999);
+insert into sys_role_menu values ('2', '117', 9999);
+insert into sys_role_menu values ('2', '500', 9999);
+insert into sys_role_menu values ('2', '501', 9999);
+insert into sys_role_menu values ('2', '1000', 9999);
+insert into sys_role_menu values ('2', '1001', 9999);
+insert into sys_role_menu values ('2', '1002', 9999);
+insert into sys_role_menu values ('2', '1003', 9999);
+insert into sys_role_menu values ('2', '1004', 9999);
+insert into sys_role_menu values ('2', '1005', 9999);
+insert into sys_role_menu values ('2', '1006', 9999);
+insert into sys_role_menu values ('2', '1007', 9999);
+insert into sys_role_menu values ('2', '1008', 9999);
+insert into sys_role_menu values ('2', '1009', 9999);
+insert into sys_role_menu values ('2', '1010', 9999);
+insert into sys_role_menu values ('2', '1011', 9999);
+insert into sys_role_menu values ('2', '1012', 9999);
+insert into sys_role_menu values ('2', '1013', 9999);
+insert into sys_role_menu values ('2', '1014', 9999);
+insert into sys_role_menu values ('2', '1015', 9999);
+insert into sys_role_menu values ('2', '1016', 9999);
+insert into sys_role_menu values ('2', '1017', 9999);
+insert into sys_role_menu values ('2', '1018', 9999);
+insert into sys_role_menu values ('2', '1019', 9999);
+insert into sys_role_menu values ('2', '1020', 9999);
+insert into sys_role_menu values ('2', '1021', 9999);
+insert into sys_role_menu values ('2', '1022', 9999);
+insert into sys_role_menu values ('2', '1023', 9999);
+insert into sys_role_menu values ('2', '1024', 9999);
+insert into sys_role_menu values ('2', '1025', 9999);
+insert into sys_role_menu values ('2', '1026', 9999);
+insert into sys_role_menu values ('2', '1027', 9999);
+insert into sys_role_menu values ('2', '1028', 9999);
+insert into sys_role_menu values ('2', '1029', 9999);
+insert into sys_role_menu values ('2', '1030', 9999);
+insert into sys_role_menu values ('2', '1031', 9999);
+insert into sys_role_menu values ('2', '1032', 9999);
+insert into sys_role_menu values ('2', '1033', 9999);
+insert into sys_role_menu values ('2', '1034', 9999);
+insert into sys_role_menu values ('2', '1035', 9999);
+insert into sys_role_menu values ('2', '1036', 9999);
+insert into sys_role_menu values ('2', '1037', 9999);
+insert into sys_role_menu values ('2', '1038', 9999);
+insert into sys_role_menu values ('2', '1039', 9999);
+insert into sys_role_menu values ('2', '1040', 9999);
+insert into sys_role_menu values ('2', '1041', 9999);
+insert into sys_role_menu values ('2', '1042', 9999);
+insert into sys_role_menu values ('2', '1043', 9999);
+insert into sys_role_menu values ('2', '1044', 9999);
+insert into sys_role_menu values ('2', '1045', 9999);
+insert into sys_role_menu values ('2', '1046', 9999);
+insert into sys_role_menu values ('2', '1047', 9999);
+insert into sys_role_menu values ('2', '1048', 9999);
+insert into sys_role_menu values ('2', '1049', 9999);
+insert into sys_role_menu values ('2', '1050', 9999);
+insert into sys_role_menu values ('2', '1051', 9999);
+insert into sys_role_menu values ('2', '1052', 9999);
+insert into sys_role_menu values ('2', '1053', 9999);
+insert into sys_role_menu values ('2', '1054', 9999);
+insert into sys_role_menu values ('2', '1055', 9999);
+insert into sys_role_menu values ('2', '1056', 9999);
+insert into sys_role_menu values ('2', '1057', 9999);
+insert into sys_role_menu values ('2', '1058', 9999);
+insert into sys_role_menu values ('2', '1059', 9999);
+insert into sys_role_menu values ('2', '1060', 9999);
 
 -- ----------------------------
 -- 8、角色和部门关联表  角色1-N部门
@@ -383,15 +396,17 @@ drop table if exists sys_role_dept;
 create table sys_role_dept (
   role_id   bigint(20) not null comment '角色ID',
   dept_id   bigint(20) not null comment '部门ID',
-  primary key(role_id, dept_id)
+  tenant_id bigint(20) NOT NULL COMMENT '租户ID',
+  primary key(role_id, dept_id),
+  KEY idx_role_dept_tenant(tenant_id) USING BTREE
 ) engine=innodb comment = '角色和部门关联表';
 
 -- ----------------------------
 -- 初始化-角色和部门关联表数据
 -- ----------------------------
-insert into sys_role_dept values ('2', '100');
-insert into sys_role_dept values ('2', '101');
-insert into sys_role_dept values ('2', '105');
+insert into sys_role_dept values ('2', '100', 9999);
+insert into sys_role_dept values ('2', '101', 9999);
+insert into sys_role_dept values ('2', '105', 9999);
 
 
 -- ----------------------------
@@ -417,27 +432,29 @@ insert into sys_user_post values ('2', '2');
 -- ----------------------------
 drop table if exists sys_oper_log;
 create table sys_oper_log (
-  oper_id           bigint(20)      not null auto_increment    comment '日志主键',
-  title             varchar(50)     default ''                 comment '模块标题',
-  business_type     int(2)          default 0                  comment '业务类型（0其它 1新增 2修改 3删除）',
-  method            varchar(200)    default ''                 comment '方法名称',
-  request_method    varchar(10)     default ''                 comment '请求方式',
-  operator_type     int(1)          default 0                  comment '操作类别（0其它 1后台用户 2手机端用户）',
-  oper_name         varchar(50)     default ''                 comment '操作人员',
-  dept_name         varchar(50)     default ''                 comment '部门名称',
-  oper_url          varchar(255)    default ''                 comment '请求URL',
-  oper_ip           varchar(128)    default ''                 comment '主机地址',
-  oper_location     varchar(255)    default ''                 comment '操作地点',
-  oper_param        varchar(2000)   default ''                 comment '请求参数',
-  json_result       varchar(2000)   default ''                 comment '返回参数',
-  status            int(1)          default 0                  comment '操作状态（0正常 1异常）',
-  error_msg         varchar(2000)   default ''                 comment '错误消息',
-  oper_time         datetime                                   comment '操作时间',
-  cost_time         bigint(20)      default 0                  comment '消耗时间',
+  oper_id           bigint(20)      not null auto_increment     comment '日志主键',
+  title             varchar(50)     default ''                  comment '模块标题',
+  business_type     int(2)          default 0                   comment '业务类型（0其它 1新增 2修改 3删除）',
+  method            varchar(200)    default ''                  comment '方法名称',
+  request_method    varchar(10)     default ''                  comment '请求方式',
+  operator_type     int(1)          default 0                   comment '操作类别（0其它 1后台用户 2手机端用户）',
+  oper_name         varchar(50)     default ''                  comment '操作人员',
+  dept_name         varchar(50)     default ''                  comment '部门名称',
+  oper_url          varchar(255)    default ''                  comment '请求URL',
+  oper_ip           varchar(128)    default ''                  comment '主机地址',
+  oper_location     varchar(255)    default ''                  comment '操作地点',
+  oper_param        varchar(2000)   default ''                  comment '请求参数',
+  json_result       varchar(2000)   default ''                  comment '返回参数',
+  status            int(1)          default 0                   comment '操作状态（0正常 1异常）',
+  error_msg         varchar(2000)   default ''                  comment '错误消息',
+  oper_time         datetime                                    comment '操作时间',
+  cost_time         bigint(20)      default 0                   comment '消耗时间',
+  tenant_id         bigint(20)      NOT NULL                    COMMENT '租户ID',
   primary key (oper_id),
   key idx_sys_oper_log_bt (business_type),
   key idx_sys_oper_log_s  (status),
-  key idx_sys_oper_log_ot (oper_time)
+  key idx_sys_oper_log_ot (oper_time),
+  KEY idx_oper_log_tenant(tenant_id) USING BTREE
 ) engine=innodb auto_increment=100 comment = '操作日志记录';
 
 
@@ -557,18 +574,20 @@ insert into sys_config values(6, '用户登录-黑名单列表',           'sys.
 -- ----------------------------
 drop table if exists sys_logininfor;
 create table sys_logininfor (
-  info_id        bigint(20)     not null auto_increment   comment '访问ID',
-  user_name      varchar(50)    default ''                comment '用户账号',
-  ipaddr         varchar(128)   default ''                comment '登录IP地址',
-  login_location varchar(255)   default ''                comment '登录地点',
-  browser        varchar(50)    default ''                comment '浏览器类型',
-  os             varchar(50)    default ''                comment '操作系统',
-  status         char(1)        default '0'               comment '登录状态（0成功 1失败）',
-  msg            varchar(255)   default ''                comment '提示消息',
-  login_time     datetime                                 comment '访问时间',
+  info_id           bigint(20)      not null auto_increment     comment '访问ID',
+  user_name         varchar(50)     default ''                  comment '用户账号',
+  ipaddr            varchar(128)    default ''                  comment '登录IP地址',
+  login_location    varchar(255)    default ''                  comment '登录地点',
+  browser           varchar(50)     default ''                  comment '浏览器类型',
+  os                varchar(50)     default ''                  comment '操作系统',
+  status            char(1)         default '0'                 comment '登录状态（0成功 1失败）',
+  msg               varchar(255)    default ''                  comment '提示消息',
+  login_time        datetime                                    comment '访问时间',
+  tenant_id         bigint(20)      NOT NULL                    COMMENT '租户ID',
   primary key (info_id),
   key idx_sys_logininfor_s  (status),
-  key idx_sys_logininfor_lt (login_time)
+  key idx_sys_logininfor_lt (login_time),
+  KEY idx_logininfor_tenant(tenant_id) USING BTREE
 ) engine=innodb auto_increment=100 comment = '系统访问记录';
 
 
@@ -577,25 +596,27 @@ create table sys_logininfor (
 -- ----------------------------
 drop table if exists sys_job;
 create table sys_job (
-  job_id              bigint(20)    not null auto_increment    comment '任务ID',
-  job_name            varchar(64)   default ''                 comment '任务名称',
-  job_group           varchar(64)   default 'DEFAULT'          comment '任务组名',
-  invoke_target       varchar(500)  not null                   comment '调用目标字符串',
-  cron_expression     varchar(255)  default ''                 comment 'cron执行表达式',
-  misfire_policy      varchar(20)   default '3'                comment '计划执行错误策略（1立即执行 2执行一次 3放弃执行）',
-  concurrent          char(1)       default '1'                comment '是否并发执行（0允许 1禁止）',
-  status              char(1)       default '0'                comment '状态（0正常 1暂停）',
-  create_by           varchar(64)   default ''                 comment '创建者',
-  create_time         datetime                                 comment '创建时间',
-  update_by           varchar(64)   default ''                 comment '更新者',
-  update_time         datetime                                 comment '更新时间',
-  remark              varchar(500)  default ''                 comment '备注信息',
-  primary key (job_id, job_name, job_group)
+  job_id            bigint(20)      not null auto_increment     comment '任务ID',
+  job_name          varchar(64)     default ''                  comment '任务名称',
+  job_group         varchar(64)     default 'DEFAULT'           comment '任务组名',
+  invoke_target     varchar(500)    not null                    comment '调用目标字符串',
+  cron_expression   varchar(255)    default ''                  comment 'cron执行表达式',
+  misfire_policy    varchar(20)     default '3'                 comment '计划执行错误策略（1立即执行 2执行一次 3放弃执行）',
+  concurrent        char(1)         default '1'                 comment '是否并发执行（0允许 1禁止）',
+  status            char(1)         default '0'                 comment '状态（0正常 1暂停）',
+  create_by         varchar(64)     default ''                  comment '创建者',
+  create_time       datetime                                    comment '创建时间',
+  update_by         varchar(64)     default ''                  comment '更新者',
+  update_time       datetime                                    comment '更新时间',
+  remark            varchar(500)    default ''                  comment '备注信息',
+  tenant_id         bigint(20)      NOT NULL                    COMMENT '租户ID',
+  primary key (job_id, job_name, job_group),
+  KEY idx_job_tenant(tenant_id) USING BTREE
 ) engine=innodb auto_increment=100 comment = '定时任务调度表';
 
-insert into sys_job values(1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams',        '0/10 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
-insert into sys_job values(2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')',  '0/15 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
-insert into sys_job values(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)',  '0/20 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
+insert into sys_job values(1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams',        '0/10 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '', 9999);
+insert into sys_job values(2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')',  '0/15 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '', 9999);
+insert into sys_job values(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)',  '0/20 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '', 9999);
 
 
 -- ----------------------------
@@ -603,15 +624,17 @@ insert into sys_job values(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryM
 -- ----------------------------
 drop table if exists sys_job_log;
 create table sys_job_log (
-  job_log_id          bigint(20)     not null auto_increment    comment '任务日志ID',
-  job_name            varchar(64)    not null                   comment '任务名称',
-  job_group           varchar(64)    not null                   comment '任务组名',
-  invoke_target       varchar(500)   not null                   comment '调用目标字符串',
-  job_message         varchar(500)                              comment '日志信息',
-  status              char(1)        default '0'                comment '执行状态（0正常 1失败）',
-  exception_info      varchar(2000)  default ''                 comment '异常信息',
-  create_time         datetime                                  comment '创建时间',
-  primary key (job_log_id)
+  job_log_id        bigint(20)      not null auto_increment     comment '任务日志ID',
+  job_name          varchar(64)     not null                    comment '任务名称',
+  job_group         varchar(64)     not null                    comment '任务组名',
+  invoke_target     varchar(500)    not null                    comment '调用目标字符串',
+  job_message       varchar(500)                                comment '日志信息',
+  status            char(1)         default '0'                 comment '执行状态（0正常 1失败）',
+  exception_info    varchar(2000)   default ''                  comment '异常信息',
+  create_time       datetime                                    comment '创建时间',
+  tenant_id         bigint(20)      NOT NULL                    COMMENT '租户ID',
+  primary key (job_log_id),
+  KEY idx_job_log_tenant(tenant_id) USING BTREE
 ) engine=innodb comment = '定时任务调度日志表';
 
 
@@ -620,24 +643,26 @@ create table sys_job_log (
 -- ----------------------------
 drop table if exists sys_notice;
 create table sys_notice (
-  notice_id         int(4)          not null auto_increment    comment '公告ID',
-  notice_title      varchar(50)     not null                   comment '公告标题',
-  notice_type       char(1)         not null                   comment '公告类型（1通知 2公告）',
-  notice_content    longblob        default null               comment '公告内容',
-  status            char(1)         default '0'                comment '公告状态（0正常 1关闭）',
-  create_by         varchar(64)     default ''                 comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         varchar(64)     default ''                 comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(255)    default null               comment '备注',
-  primary key (notice_id)
+  notice_id         int(4)          not null auto_increment     comment '公告ID',
+  notice_title      varchar(50)     not null                    comment '公告标题',
+  notice_type       char(1)         not null                    comment '公告类型（1通知 2公告）',
+  notice_content    longblob        default null                comment '公告内容',
+  status            char(1)         default '0'                 comment '公告状态（0正常 1关闭）',
+  create_by         varchar(64)     default ''                  comment '创建者',
+  create_time       datetime                                    comment '创建时间',
+  update_by         varchar(64)     default ''                  comment '更新者',
+  update_time       datetime                                    comment '更新时间',
+  remark            varchar(255)    default null                comment '备注',
+  tenant_id         bigint(20)      NOT NULL                    COMMENT '租户ID',
+  primary key (notice_id),
+  KEY idx_notice_tenant(tenant_id) USING BTREE
 ) engine=innodb auto_increment=10 comment = '通知公告表';
 
 -- ----------------------------
 -- 初始化-公告信息表数据
 -- ----------------------------
-insert into sys_notice values('1', '温馨提醒：2018-07-01 若依新版本发布啦', '2', '新版本内容', '0', 'admin', sysdate(), '', null, '管理员');
-insert into sys_notice values('2', '维护通知：2018-07-01 若依系统凌晨维护', '1', '维护内容',   '0', 'admin', sysdate(), '', null, '管理员');
+insert into sys_notice values('1', '温馨提醒：2018-07-01 若依新版本发布啦', '2', '新版本内容', '0', 'admin', sysdate(), '', null, '管理员', 9999);
+insert into sys_notice values('2', '维护通知：2018-07-01 若依系统凌晨维护', '1', '维护内容',   '0', 'admin', sysdate(), '', null, '管理员', 9999);
 
 
 -- ----------------------------
@@ -699,3 +724,54 @@ create table gen_table_column (
   update_time       datetime                                   comment '更新时间',
   primary key (column_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
+
+-- ----------------------------
+-- Table structure for sys_tenant
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_tenant`;
+CREATE TABLE `sys_tenant` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `tenant_name` varchar(50) NOT NULL COMMENT '租户名称',
+  `user_name` varchar(20) DEFAULT NULL COMMENT '管理员账号',
+  `user_phone` varchar(20) DEFAULT NULL COMMENT '手机号码',
+  `user_email` varchar(200) DEFAULT NULL COMMENT '邮箱地址',
+  `tenant_package` bigint(20) DEFAULT NULL COMMENT '租户套餐',
+  `tenant_time` datetime DEFAULT NULL COMMENT '租赁结束时间',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='租户表';
+
+-- ----------------------------
+-- Records of sys_tenant
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_tenant_package
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_tenant_package`;
+CREATE TABLE `sys_tenant_package` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '套餐编号',
+  `name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '套餐名',
+  `menu_ids` varchar(2048) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联的菜单编号',
+  `status` char(1) CHARACTER SET utf8mb4 NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COLLATE=utf8mb4_unicode_ci COMMENT='租户套餐表';
+
+-- ----------------------------
+-- Records of sys_tenant_package
+-- ----------------------------
+INSERT INTO `sys_tenant_package` VALUES (18, '基础管理套餐', '1,100,1001,1002,1003,1004,1005,1006,1007,101,1008,1009,1010,1011,1012,103,1017,1018,1019,1020,104,1021,1022,1023,1024,1025,2044,2045,2046,2047,2048,2049,2050,2061,2051,2052,2053,2054,2055,2056,2063,2057,2058,2059,2060', '0', '0', 'admin', '2022-04-08 10:07:31', 'admin', '2022-04-08 10:07:31', '');
+INSERT INTO `sys_tenant_package` VALUES (100, '系统监控套餐', '2,109,1046,1047,1048,2031,2032,2033,2034,2035,2036,2037,2038,2039,2040,2041,2042', '0', '0', 'admin', '2022-04-24 16:28:08', 'admin', '2022-09-11 10:11:12', '');
+INSERT INTO `sys_tenant_package` VALUES (102, '定时任务套餐', '2044,2045,2046,2047,2048,2049,2050,2061,2051,2052,2053,2054,2055,2056,2063,2057,2058,2059,2060', '0', '0', 'admin', '2023-04-14 00:03:55', NULL, NULL, NULL);

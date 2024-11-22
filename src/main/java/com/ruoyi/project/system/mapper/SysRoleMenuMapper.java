@@ -1,14 +1,18 @@
 package com.ruoyi.project.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.project.system.domain.SysRoleMenu;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 角色与菜单关联表 数据层
  * 
  * @author ruoyi
  */
-public interface SysRoleMenuMapper
+public interface SysRoleMenuMapper extends BaseMapper<SysRoleMenu>
 {
     /**
      * 查询菜单使用数量
@@ -27,6 +31,15 @@ public interface SysRoleMenuMapper
     public int deleteRoleMenuByRoleId(Long roleId);
 
     /**
+     * 通过租户ID删除角色和菜单关联
+     *
+     * @param tenantId 租户ID
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deleteRoleMenuByTenantId(Long tenantId);
+
+    /**
      * 批量删除角色菜单关联信息
      * 
      * @param ids 需要删除的数据ID
@@ -41,4 +54,32 @@ public interface SysRoleMenuMapper
      * @return 结果
      */
     public int batchRoleMenu(List<SysRoleMenu> roleMenuList);
+
+
+    /**
+     * 通过租户ID删除角色和菜单关联
+     *
+     * @param ids 租户ID
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deleteRoleMenuByTenantIds(Long[] ids);
+
+    /**
+     * 通过租户ID和菜单id定向删除角色和菜单关联
+     *
+     * @param tenantId 租户ID
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deleteRoleMenuByTenantIdAndPackage(@Param("tenantId") Long tenantId, @Param("menuids") Long[] menuids);
+
+    /**
+     * 批量新增角色菜单信息-根据租户套餐改变
+     *
+     * @param roleMenuList 角色菜单列表
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int batchRoleMenuByPackage(List<SysRoleMenu> roleMenuList);
 }

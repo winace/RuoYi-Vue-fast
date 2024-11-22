@@ -2,6 +2,8 @@ package com.ruoyi.project.system.mapper;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.ruoyi.project.system.domain.SysUser;
@@ -11,7 +13,7 @@ import com.ruoyi.project.system.domain.SysUser;
  * 
  * @author ruoyi
  */
-public interface SysUserMapper
+public interface SysUserMapper extends BaseMapper<SysUser>
 {
     /**
      * 根据条件分页查询用户列表
@@ -126,4 +128,14 @@ public interface SysUserMapper
      * @return 结果
      */
     public SysUser checkEmailUnique(String email);
+
+
+    /**
+     * 批量删除用户信息-根据租户
+     *
+     * @param ids 需要删除的租户ID
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deleteUserByTenantId(Long[] ids);
 }

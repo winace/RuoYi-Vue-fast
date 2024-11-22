@@ -2,6 +2,9 @@ package com.ruoyi.project.monitor.service.impl;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
+
+import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
+import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -38,7 +41,11 @@ public class SysJobServiceImpl implements ISysJobService
     public void init() throws SchedulerException, TaskException
     {
         scheduler.clear();
+        //此时还没有租户，所以全部关闭租户功能
+        InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
         List<SysJob> jobList = jobMapper.selectJobAll();
+        //恢复租户功能
+        InterceptorIgnoreHelper.clearIgnoreStrategy();
         for (SysJob job : jobList)
         {
             ScheduleUtils.createScheduleJob(scheduler, job);
@@ -49,7 +56,7 @@ public class SysJobServiceImpl implements ISysJobService
      * 获取quartz调度器的计划任务列表
      * 
      * @param job 调度信息
-     * @return
+     * @return 计划任务列表
      */
     @Override
     public List<SysJob> selectJobList(SysJob job)

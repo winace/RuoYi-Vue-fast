@@ -1,4 +1,4 @@
-package com.ruoyi.framework.config.handler;
+package com.ruoyi.framework.mybatis.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.ruoyi.common.utils.SecurityUtils;

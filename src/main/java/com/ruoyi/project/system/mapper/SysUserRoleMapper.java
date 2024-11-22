@@ -1,6 +1,9 @@
 package com.ruoyi.project.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.project.system.domain.SysUserRole;
 
@@ -9,7 +12,7 @@ import com.ruoyi.project.system.domain.SysUserRole;
  * 
  * @author ruoyi
  */
-public interface SysUserRoleMapper
+public interface SysUserRoleMapper extends BaseMapper<SysUserRole>
 {
     /**
      * 通过用户ID删除用户和角色关联
@@ -59,4 +62,13 @@ public interface SysUserRoleMapper
      * @return 结果
      */
     public int deleteUserRoleInfos(@Param("roleId") Long roleId, @Param("userIds") Long[] userIds);
+
+    /**
+     * 批量删除用户和角色关联-根据租户
+     *
+     * @param ids 需要删除的用户租户id
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deleteUserRoleByTenantId(Long[] ids);
 }

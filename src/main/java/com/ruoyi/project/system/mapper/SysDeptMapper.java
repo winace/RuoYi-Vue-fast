@@ -1,6 +1,9 @@
 package com.ruoyi.project.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.project.system.domain.SysDept;
 
@@ -9,7 +12,7 @@ import com.ruoyi.project.system.domain.SysDept;
  * 
  * @author ruoyi
  */
-public interface SysDeptMapper
+public interface SysDeptMapper extends BaseMapper<SysDept>
 {
     /**
      * 查询部门管理数据
@@ -115,4 +118,13 @@ public interface SysDeptMapper
      * @return 结果
      */
     public int deleteDeptById(Long deptId);
+
+    /**
+     * 删除部门信息-根据租户ID
+     *
+     * @param ids 租户id
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deleteDeptByTenantId(Long[] ids);
 }

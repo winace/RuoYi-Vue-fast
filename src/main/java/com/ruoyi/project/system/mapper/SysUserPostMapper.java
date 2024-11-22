@@ -1,6 +1,9 @@
 package com.ruoyi.project.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.project.system.domain.SysUserPost;
 
 /**
@@ -8,7 +11,7 @@ import com.ruoyi.project.system.domain.SysUserPost;
  * 
  * @author ruoyi
  */
-public interface SysUserPostMapper
+public interface SysUserPostMapper extends BaseMapper<SysUserPost>
 {
     /**
      * 通过用户ID删除用户和岗位关联
@@ -41,4 +44,13 @@ public interface SysUserPostMapper
      * @return 结果
      */
     public int batchUserPost(List<SysUserPost> userPostList);
+
+    /**
+     * 批量删除用户和岗位关联-根据租户
+     *
+     * @param ids 需要删除的数据租户id
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deleteUserPostByTenantId(Long[] ids);
 }

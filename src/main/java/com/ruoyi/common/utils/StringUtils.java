@@ -1,11 +1,8 @@
 package com.ruoyi.common.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.AntPathMatcher;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.text.StrFormatter;
@@ -148,7 +145,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * * 判断一个对象是否是数组类型（Java基本型别的数组）
+     * 判断一个对象是否是数组类型（Java基本型别的数组）
      * 
      * @param object 对象
      * @return true：是数组 false：不是数组
@@ -619,7 +616,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * 
      * @param pattern 匹配规则
      * @param url 需要匹配的url
-     * @return
+     * @return 配置成功
      */
     public static boolean isMatch(String pattern, String url)
     {
@@ -680,5 +677,43 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
             }
         }
         return sb.toString();
+    }
+
+
+    /**
+     * @param oldArr 旧数组
+     * @param newArr 新数组
+     * @return Map 包含两个数组，相较于旧数组，新数组多了哪些元素，以及少了哪些元素
+     */
+    public static Map<String, String[]> compareStringArray(String[] oldArr, String[] newArr){
+        List<String> addList = new ArrayList<>();
+        List<String> deleteList = new ArrayList<>();
+
+        for (String anOld: oldArr) {
+            if (!ArrayUtils.contains(newArr, anOld)) {
+                deleteList.add(anOld);
+            }
+        }
+
+        for (String aNew: newArr) {
+            if (!ArrayUtils.contains(oldArr, aNew)) {
+                addList.add(aNew);
+            }
+        }
+
+        String[] addArr = addList.toArray(new String[0]);
+        String[] deleteArr = deleteList.toArray(new String[0]);
+        Map<String, String[]> res = new HashMap<>();
+        res.put("addArr", addArr);
+        res.put("deleteArr", deleteArr);
+        return res;
+    }
+
+    public static Long[] stringToLong(String[] str) {
+        Long[] arr = new Long[str.length];
+        for (int i = 0; i < str.length; i++) {
+            arr[i] = Long.parseLong(str[i]);
+        }
+        return arr;
     }
 }

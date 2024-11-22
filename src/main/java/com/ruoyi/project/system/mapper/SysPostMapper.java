@@ -1,6 +1,9 @@
 package com.ruoyi.project.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.project.system.domain.SysPost;
 
 /**
@@ -8,7 +11,7 @@ import com.ruoyi.project.system.domain.SysPost;
  * 
  * @author ruoyi
  */
-public interface SysPostMapper
+public interface SysPostMapper extends BaseMapper<SysPost>
 {
     /**
      * 查询岗位数据集合
@@ -96,4 +99,13 @@ public interface SysPostMapper
      * @return 结果
      */
     public SysPost checkPostCodeUnique(String postCode);
+
+    /**
+     * 批量删除岗位信息-根据租户
+     *
+     * @param ids 需要删除的岗位租户id
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deletePostByTenantId(Long[] ids);
 }

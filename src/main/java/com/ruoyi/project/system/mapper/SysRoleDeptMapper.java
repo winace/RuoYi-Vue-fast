@@ -1,6 +1,9 @@
 package com.ruoyi.project.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.project.system.domain.SysRoleDept;
 
 /**
@@ -8,7 +11,7 @@ import com.ruoyi.project.system.domain.SysRoleDept;
  * 
  * @author ruoyi
  */
-public interface SysRoleDeptMapper
+public interface SysRoleDeptMapper extends BaseMapper<SysRoleDept>
 {
     /**
      * 通过角色ID删除角色和部门关联
@@ -41,4 +44,13 @@ public interface SysRoleDeptMapper
      * @return 结果
      */
     public int batchRoleDept(List<SysRoleDept> roleDeptList);
+
+    /**
+     * 批量删除角色部门关联信息-根据租户
+     *
+     * @param ids 需要删除的数据租户ID
+     * @return 结果
+     */
+    @InterceptorIgnore(tenantLine = "1")
+    int deleteRoleDeptByTenantId(Long[] ids);
 }

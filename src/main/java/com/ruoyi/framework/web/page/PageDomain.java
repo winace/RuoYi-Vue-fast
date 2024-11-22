@@ -5,7 +5,7 @@ import com.ruoyi.common.utils.StringUtils;
 
 /**
  * 分页数据
- * 
+ *
  * @author ruoyi
  */
 public class PageDomain
@@ -47,6 +47,10 @@ public class PageDomain
             page.setPageSize(DEFAULT_PAGE_SIZE.intValue());
         }
         return Page.of(page.getPageNum(), page.getPageSize());
+    }
+
+    public <T> Page<T> toPage() {
+        return of(this);
     }
 
     public String getOrderBy()
