@@ -15,10 +15,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="updateBy"      column="update_by"     />
 		<result property="updateTime"    column="update_time"   />
 		<result property="remark"        column="remark"        />
+		<result property="tenantId"   column="tenant_id"   />
 	</resultMap>
 	
 	<sql id="selectPostVo">
-        select post_id, post_code, post_name, post_sort, status, create_by, create_time, remark 
+        select post_id, post_code, post_name, post_sort, status, create_by, create_time, remark, tenant_id
 		from sys_post
     </sql>
 	
@@ -55,10 +56,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="selectPostsByUserName" parameterType="String" resultMap="SysPostResult">
-		select p.post_id, p.post_name, p.post_code
+		select p.post_id, p.post_name, p.post_code, p.tenant_id
 		from sys_post p
-			 left join sys_user_post up on up.post_id = p.post_id
-			 left join sys_user u on u.user_id = up.user_id
+		left join sys_user_post up on up.post_id = p.post_id
+		left join sys_user u on u.user_id = up.user_id
 		where u.user_name = #{userName}
 	</select>
 	

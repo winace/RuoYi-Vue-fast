@@ -18,10 +18,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="updateBy"       column="update_by"       />
 		<result property="updateTime"     column="update_time"     />
 		<result property="remark"         column="remark"          />
+		<result property="tenantId"   column="tenant_id"   />
 	</resultMap>
 	
 	<sql id="selectJobVo">
-        select job_id, job_name, job_group, invoke_target, cron_expression, misfire_policy, concurrent, status, create_by, create_time, remark 
+        select job_id, job_name, job_group, invoke_target, cron_expression, misfire_policy, concurrent, status, create_by, create_time, remark, tenant_id
 		from sys_job
     </sql>
 	
