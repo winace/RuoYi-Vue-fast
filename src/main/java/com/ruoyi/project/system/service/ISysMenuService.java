@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import com.ruoyi.framework.web.domain.TreeSelect;
 import com.ruoyi.project.system.domain.SysMenu;
+import com.ruoyi.project.system.domain.SysSimpleMenu;
 import com.ruoyi.project.system.domain.vo.RouterVo;
 
 /**
@@ -29,6 +30,14 @@ public interface ISysMenuService
      * @return 菜单列表
      */
     public List<SysMenu> selectMenuList(SysMenu menu, Long userId);
+
+    /**
+     * 查询所有开启状态菜单精简信息
+     *
+     * @return 菜单列表
+     */
+    List<SysSimpleMenu> selectSimpleMenuList();
+
 
     /**
      * 根据用户ID查询权限

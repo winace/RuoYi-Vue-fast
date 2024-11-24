@@ -1,6 +1,8 @@
 package com.ruoyi.project.system.mapper;
 
 import java.util.List;
+
+import com.ruoyi.project.system.domain.SysSimpleMenu;
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.project.system.domain.SysMenu;
 
@@ -20,11 +22,11 @@ public interface SysMenuMapper
     public List<SysMenu> selectMenuList(SysMenu menu);
 
     /**
-     * 根据用户所有权限
-     * 
-     * @return 权限列表
+     * 查询所有开启状态菜单精简信息
+     *
+     * @return 菜单列表
      */
-    public List<String> selectMenuPerms();
+    List<SysSimpleMenu> selectSimpleMenuList();
 
     /**
      * 根据用户查询系统菜单列表

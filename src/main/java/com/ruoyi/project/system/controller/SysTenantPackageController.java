@@ -24,7 +24,7 @@ import java.util.List;
  * @since 2024-11-22
  */
 @RestController
-@RequestMapping("/tenantpackage")
+@RequestMapping("/system/tenantpackage")
 public class SysTenantPackageController extends BaseController {
     @Autowired
     private ISysTenantPackageService sysTenantPackageService;
@@ -77,7 +77,8 @@ public class SysTenantPackageController extends BaseController {
     @Log(title = "租户套餐", businessType = BusinessType.INSERT)
     @PostMapping
     public R<Object> add(@RequestBody SysTenantPackage sysTenantPackage) {
-        return toR(sysTenantPackageService.insertSysTenantPackage(sysTenantPackage));
+        sysTenantPackageService.insertSysTenantPackage(sysTenantPackage);
+        return ok(sysTenantPackage);
     }
 
     /**

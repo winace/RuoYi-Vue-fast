@@ -1,7 +1,7 @@
 package com.ruoyi.project.monitor.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.constant.ScheduleConstants;
 import com.ruoyi.common.utils.StringUtils;
@@ -23,14 +23,13 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_job")
 public class SysJob extends BaseTenantEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 任务ID */
     @Excel(name = "任务序号", cellType = ColumnType.NUMERIC)
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long jobId;
 
     /** 任务名称 */

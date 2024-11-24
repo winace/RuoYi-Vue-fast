@@ -88,7 +88,7 @@ public class ConfigUtil {
      * @param configKey 参数键
      * @return 缓存键key
      */
-    public static String getCacheKey(String configKey) {
+    private static String getCacheKey(String configKey) {
         return CacheConstants.SYS_CONFIG_KEY + configKey;
     }
 

@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2024-11-22
  */
 @RestController
-@RequestMapping("/tenant")
+@RequestMapping("/system/tenant")
 public class SysTenantController extends BaseController {
     @Autowired
     private ISysTenantService sysTenantService;
@@ -67,7 +67,7 @@ public class SysTenantController extends BaseController {
     @PostMapping
     public R<Object> add(@RequestBody SysTenant sysTenant) {
         boolean b = sysTenantService.insertSysTenant(sysTenant);
-        return toR(b);
+        return ok(sysTenant);
     }
 
     /**
@@ -78,6 +78,17 @@ public class SysTenantController extends BaseController {
     @PutMapping
     public R<Object> edit(@RequestBody SysTenant sysTenant) {
         return toR(sysTenantService.updateSysTenant(sysTenant));
+    }
+
+
+    /**
+     * 重置租户管理员密码
+     */
+    @PreAuthorize("@ss.hasPermi('system:tenant:resetPwd')")
+    @Log(title = "重置租户管理员密码", businessType = BusinessType.UPDATE)
+    @PostMapping("/resetTenantUserPwd/{id}")
+    public R<Object> resetTenantUserPwd(@PathVariable String id) {
+        return toR(sysTenantService.resetTenantUserPwd(id));
     }
 
     /**

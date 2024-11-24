@@ -53,6 +53,14 @@ public interface ISysTenantService {
     int updateSysTenant(SysTenant sysTenant);
 
     /**
+     * 重置租户管理员密码
+     *
+     * @param id 租户id
+     * @return 是否成功
+     */
+    boolean resetTenantUserPwd(String id);
+
+    /**
      * 批量删除租户管理
      *
      * @param ids 需要删除的租户管理主键集合

@@ -1,5 +1,7 @@
 package com.ruoyi.project.monitor.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel.ColumnType;
@@ -18,6 +20,7 @@ public class SysOperLog extends BaseTenantEntity
 
     /** 日志主键 */
     @Excel(name = "操作序号", cellType = ColumnType.NUMERIC)
+    @TableId(type = IdType.AUTO)
     private Long operId;
 
     /** 操作模块 */

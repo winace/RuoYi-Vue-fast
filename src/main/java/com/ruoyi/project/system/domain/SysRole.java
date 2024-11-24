@@ -1,8 +1,8 @@
 package com.ruoyi.project.system.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel.ColumnType;
 import com.ruoyi.framework.web.domain.BaseTenantEntity;
@@ -23,14 +23,13 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-@TableName("sys_role")
 public class SysRole extends BaseTenantEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 角色ID */
     @Excel(name = "角色序号", cellType = ColumnType.NUMERIC)
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long roleId;
     /** 角色名称 */
     @Excel(name = "角色名称")

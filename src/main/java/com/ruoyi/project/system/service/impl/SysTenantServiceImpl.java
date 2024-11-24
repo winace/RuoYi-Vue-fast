@@ -1,6 +1,8 @@
 package com.ruoyi.project.system.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
+import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.text.Convert;
@@ -18,6 +20,7 @@ import com.ruoyi.project.system.domain.*;
 import com.ruoyi.project.system.mapper.*;
 import com.ruoyi.project.system.service.ISysTenantService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -123,10 +126,13 @@ public class SysTenantServiceImpl implements ISysTenantService {
     public boolean insertSysTenant(SysTenant sysTenant) {
         if (StringUtils.isEmpty(sysTenant.getUserName())) {
             throw new ServiceException("管理员账号为空,请重新设置!");
-        }
+        }//此时还没有租户，所以全部关闭租户功能
+        InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
         //先判断租户管理员设置的账号是否存在
-        SysUser usercount = userMapper.checkUserNameUnique(sysTenant.getUserName());
-        if (!(usercount == null)) {
+        SysUser userCount = userMapper.checkUserNameUnique(sysTenant.getUserName());
+        //恢复租户功能
+        InterceptorIgnoreHelper.clearIgnoreStrategy();
+        if (userCount != null) {
             throw new ServiceException("用户名已存在,请重新设置!");
         }
         //创建租户
@@ -158,11 +164,22 @@ public class SysTenantServiceImpl implements ISysTenantService {
         user.setPassword(password);
         userMapper.insert(user);
         userPostMapper.insert(new SysUserPost().setUserId(user.getUserId()).setPostId(postId));
-        userRoleMapper.insert(new SysUserRole().setRoleId(roleId).setUserId(user.getUserId()));
-        String configValue = ConfigUtil.getCacheKey("sys.message.type");
-        if (!Boolean.parseBoolean(configValue)) {
+        userRoleMapper.insert(new SysUserRole().setUserId(user.getUserId()).setRoleId(roleId));
+        sendNotice(sysTenant, randomPassword);
+    }
+
+    /**
+     * 邮件通知
+     *
+     * @param sysTenant      租户
+     * @param randomPassword 初始密码
+     */
+    private void sendNotice(SysTenant sysTenant, String randomPassword) {
+        SysConfig config = ConfigUtil.getConfigCache("sys.message.type");
+        String content = String.format("租户[%s]您好。请牢记管理员账号：%s，密码：%s", sysTenant.getTenantName(), sysTenant.getUserName(), randomPassword);
+        if (config == null || !config.toBoolean()) {
             //调用邮件通知
-            emailUtil.sendSimpleMail("租户管理员账号注册成功", "请牢记登录密码:" + randomPassword, sysTenant.getUserEmail());
+            emailUtil.sendSimpleMail("租户管理员账号注册成功", content, sysTenant.getUserEmail());
         } else {
             try {
                 //短信
@@ -170,7 +187,7 @@ public class SysTenantServiceImpl implements ISysTenantService {
             } catch (Exception e) {
                 log.info("短信调用失败:{}", e.getMessage());
                 //调用邮件通知
-                emailUtil.sendSimpleMail("租户管理员账号注册成功", "请牢记登录密码:" + randomPassword, sysTenant.getUserEmail());
+                emailUtil.sendSimpleMail("租户管理员账号注册成功", content, sysTenant.getUserEmail());
             }
         }
     }
@@ -183,21 +200,24 @@ public class SysTenantServiceImpl implements ISysTenantService {
         role.setCreateBy(sysTenant.getUserName());
         role.setRemark("租户管理员");
         role.setAdminRole(true);
-        sysRoleMapper.insertRole(role);
+        sysRoleMapper.insert(role);
         //根据租户套餐ids查出套餐编码塞入角色-菜单表
         createRoleMenu(sysTenant, role);
         return role.getRoleId();
     }
 
-    //目前为单套餐,跟租户绑定,解耦防止套餐变动影响多个租户
+    //目前为多套餐(套餐需要足够细-单一模块，套餐一般情况下，不可变更),跟租户绑定,解耦防止套餐变动影响多个租户
     private void createRoleMenu(SysTenant sysTenant, SysRole role) {
-        SysTenantPackage sysTenantPackage = sysTenantPackageMapper.selectById(sysTenant.getTenantPackage());
-        List<String> subMenus = Arrays.asList(sysTenantPackage.getMenuIds().split(","));
+        List<SysTenantPackage> packageList = sysTenantPackageMapper.selectBatchIds(sysTenant.getPackageIds());
+        List<String> subMenus = Lists.newArrayList();
+        for (SysTenantPackage tenantPackage : packageList) {
+            subMenus.addAll(Arrays.asList(tenantPackage.getMenuIds().split(",")));
+        }
 
-        List<SysRoleMenu> roleMenuList = subMenus.stream().map(menuid -> {
+        List<SysRoleMenu> roleMenuList = subMenus.stream().map(menuId -> {
             SysRoleMenu entity = new SysRoleMenu();
             entity.setRoleId(role.getRoleId());
-            entity.setMenuId(Convert.toLong(menuid));
+            entity.setMenuId(Convert.toLong(menuId));
             return entity;
         }).collect(Collectors.toList());
         sysRoleMenuMapper.batchRoleMenu(roleMenuList);
@@ -251,6 +271,17 @@ public class SysTenantServiceImpl implements ISysTenantService {
             }
         }
         return sysTenantMapper.updateById(sysTenant);
+    }
+
+    @Override
+    public boolean resetTenantUserPwd(String id) {
+        SysTenant tenant = sysTenantMapper.selectById(id);
+        // 生成密码 采用随机生成8位数字
+        String randomPassword = RandomStringUtils.randomNumeric(8);
+        String password = SecurityUtils.encryptPassword(randomPassword);
+        userMapper.resetUserPwd(tenant.getUserName(), password);
+        sendNotice(tenant, randomPassword);
+        return true;
     }
 
     /**

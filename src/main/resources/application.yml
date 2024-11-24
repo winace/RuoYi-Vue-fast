@@ -208,6 +208,8 @@ mybatis-plus:
       - sys_dict_data
       - sys_dict_type
       - sys_menu
+      - sys_tenant
+      - sys_tenant_package
 
 # PageHelper分页插件
 pagehelper:

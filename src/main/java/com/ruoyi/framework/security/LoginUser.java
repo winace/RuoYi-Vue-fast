@@ -1,14 +1,13 @@
 package com.ruoyi.framework.security;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
-
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.ruoyi.project.system.domain.SysUser;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.alibaba.fastjson2.annotation.JSONField;
-import com.ruoyi.project.system.domain.SysUser;
+
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * 登录用户身份权限
@@ -65,19 +64,8 @@ public class LoginUser implements UserDetails
      */
     private Set<String> permissions;
 
-    /**
-     * 租户租赁截止日期--dhr
-     */
-    private Date tenantEndDate;
-    /**
-     * 租户状态
-     */
-    private Integer tenantStatus;
 
-
-    public LoginUser()
-    {
-    }
+    public LoginUser() {}
 
     public LoginUser(SysUser user, Set<String> permissions)
     {

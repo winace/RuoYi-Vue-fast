@@ -83,7 +83,7 @@ create table sys_post
   post_code     varchar(64)     not null                    comment '岗位编码',
   post_name     varchar(50)     not null                    comment '岗位名称',
   post_sort     int(4)          not null                    comment '显示顺序',
-  status        char(1)         not null                    comment '状态（0正常 1停用）',
+  status        char(1)         default '0'                 comment '状态（0正常 1停用）',
   create_by     varchar(64)     default ''                  comment '创建者',
   create_time   datetime                                    comment '创建时间',
   update_by     varchar(64)     default ''                  comment '更新者',
@@ -115,7 +115,7 @@ create table sys_role (
   data_scope            char(1)         default '1'                 comment '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
   menu_check_strictly   tinyint(1)      default 1                   comment '菜单树选择项是否关联显示',
   dept_check_strictly   tinyint(1)      default 1                   comment '部门树选择项是否关联显示',
-  status                char(1)         not null                    comment '角色状态（0正常 1停用）',
+  status                char(1)         default '0'                 comment '角色状态（0正常 1停用）',
   admin_role            int(1)          NOT NULL DEFAULT '0'        COMMENT '是否管理员角色（0 不是 1是）',
   del_flag              char(1)         default '0'                 comment '删除标志（0代表存在 2代表删除）',
   create_by             varchar(64)     default ''                  comment '创建者',
@@ -267,6 +267,20 @@ insert into sys_menu values('1057', '生成删除', '116', '3', '#', '', '', '',
 insert into sys_menu values('1058', '导入代码', '116', '4', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:import',            '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1059', '预览代码', '116', '5', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:preview',           '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1060', '生成代码', '116', '6', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:code',              '#', 'admin', sysdate(), '', null, '');
+-- 租户管理
+INSERT INTO sys_menu VALUES('2013', '租户管理', '1',    1, 'tenant', 'system/tenant/index', '', '', 1, 0, 'C', '0', '0', 'system:tenant:list', 'tree', 'admin', sysdate(), '', null, '租户管理菜单');
+INSERT INTO sys_menu VALUES('2014', '租户查询', '2013', 1, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenant:query', '#', 'admin', sysdate(), '', NULL, '');
+INSERT INTO sys_menu VALUES('2015', '租户新增', '2013', 2, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenant:add', '#', 'admin', sysdate(), '', NULL, '');
+INSERT INTO sys_menu VALUES('2016', '租户修改', '2013', 3, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenant:edit', '#', 'admin', sysdate(), '', NULL, '');
+INSERT INTO sys_menu VALUES('2017', '租户删除', '2013', 4, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenant:remove', '#', 'admin', sysdate(), '', NULL, '');
+INSERT INTO sys_menu VALUES('2018', '租户导出', '2013', 5, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenant:export', '#', 'admin', sysdate(), '', NULL, '');
+-- 租户套餐
+INSERT INTO sys_menu VALUES('2019', '租户套餐', '1',    1, 'tenantpackage', 'system/tenantpackage/index', '', '', 1, 0, 'C', '0', '0', 'system:tenantpackage:list', 'shopping', 'admin', sysdate(), '', null, '租户套餐菜单');
+INSERT INTO sys_menu VALUES('2020', '套餐查询', '2019', 1, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenantpackage:query', '#', 'admin', sysdate(), '', NULL, '');
+INSERT INTO sys_menu VALUES('2021', '套餐新增', '2019', 2, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenantpackage:add', '#', 'admin', sysdate(), '', NULL, '');
+INSERT INTO sys_menu VALUES('2022', '套餐修改', '2019', 3, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenantpackage:edit', '#', 'admin',sysdate(), '', NULL, '');
+INSERT INTO sys_menu VALUES('2023', '套餐删除', '2019', 4, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenantpackage:remove', '#', 'admin',sysdate(), '', NULL, '');
+INSERT INTO sys_menu VALUES('2024', '套餐导出', '2019', 5, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenantpackage:export', '#', 'admin',sysdate(), '', NULL, '');
 
 
 -- ----------------------------
@@ -417,14 +431,16 @@ create table sys_user_post
 (
   user_id   bigint(20) not null comment '用户ID',
   post_id   bigint(20) not null comment '岗位ID',
-  primary key (user_id, post_id)
+  tenant_id bigint(20) NOT NULL COMMENT '租户ID',
+  primary key (user_id, post_id),
+  KEY idx_user_post_tenant(tenant_id) USING BTREE
 ) engine=innodb comment = '用户与岗位关联表';
 
 -- ----------------------------
 -- 初始化-用户与岗位关联表数据
 -- ----------------------------
-insert into sys_user_post values ('1', '1');
-insert into sys_user_post values ('2', '2');
+insert into sys_user_post values ('1', '1', 9999);
+insert into sys_user_post values ('2', '2', 9999);
 
 
 -- ----------------------------
@@ -477,16 +493,18 @@ create table sys_dict_type
   unique (dict_type)
 ) engine=innodb auto_increment=100 comment = '字典类型表';
 
-insert into sys_dict_type values(1,  '用户性别', 'sys_user_sex',        '0', 'admin', sysdate(), '', null, '用户性别列表');
-insert into sys_dict_type values(2,  '菜单状态', 'sys_show_hide',       '0', 'admin', sysdate(), '', null, '菜单状态列表');
-insert into sys_dict_type values(3,  '系统开关', 'sys_normal_disable',  '0', 'admin', sysdate(), '', null, '系统开关列表');
-insert into sys_dict_type values(4,  '任务状态', 'sys_job_status',      '0', 'admin', sysdate(), '', null, '任务状态列表');
-insert into sys_dict_type values(5,  '任务分组', 'sys_job_group',       '0', 'admin', sysdate(), '', null, '任务分组列表');
-insert into sys_dict_type values(6,  '系统是否', 'sys_yes_no',          '0', 'admin', sysdate(), '', null, '系统是否列表');
-insert into sys_dict_type values(7,  '通知类型', 'sys_notice_type',     '0', 'admin', sysdate(), '', null, '通知类型列表');
-insert into sys_dict_type values(8,  '通知状态', 'sys_notice_status',   '0', 'admin', sysdate(), '', null, '通知状态列表');
-insert into sys_dict_type values(9,  '操作类型', 'sys_oper_type',       '0', 'admin', sysdate(), '', null, '操作类型列表');
-insert into sys_dict_type values(10, '系统状态', 'sys_common_status',   '0', 'admin', sysdate(), '', null, '登录状态列表');
+insert into sys_dict_type values(1,   '用户性别', 'sys_user_sex',        '0', 'admin', sysdate(), '', null, '用户性别列表');
+insert into sys_dict_type values(2,   '菜单状态', 'sys_show_hide',       '0', 'admin', sysdate(), '', null, '菜单状态列表');
+insert into sys_dict_type values(3,   '系统开关', 'sys_normal_disable',  '0', 'admin', sysdate(), '', null, '系统开关列表');
+insert into sys_dict_type values(4,   '任务状态', 'sys_job_status',      '0', 'admin', sysdate(), '', null, '任务状态列表');
+insert into sys_dict_type values(5,   '任务分组', 'sys_job_group',       '0', 'admin', sysdate(), '', null, '任务分组列表');
+insert into sys_dict_type values(6,   '系统是否', 'sys_yes_no',          '0', 'admin', sysdate(), '', null, '系统是否列表');
+insert into sys_dict_type values(7,   '通知类型', 'sys_notice_type',     '0', 'admin', sysdate(), '', null, '通知类型列表');
+insert into sys_dict_type values(8,   '通知状态', 'sys_notice_status',   '0', 'admin', sysdate(), '', null, '通知状态列表');
+insert into sys_dict_type values(9,   '操作类型', 'sys_oper_type',       '0', 'admin', sysdate(), '', null, '操作类型列表');
+insert into sys_dict_type values(10,  '系统状态', 'sys_common_status',   '0', 'admin', sysdate(), '', null, '登录状态列表');
+INSERT INTO sys_dict_type VALUES(100, '租户状态', 'sys_tenant_status',   '0', 'admin', sysdate(), '', NULL, '租户状态列表');
+INSERT INTO sys_dict_type VALUES(101, '报警通知', 'sys_message_type',    '0', 'admin', sysdate(), '', NULL, '报警通知列表');
 
 
 -- ----------------------------
@@ -512,35 +530,39 @@ create table sys_dict_data
   primary key (dict_code)
 ) engine=innodb auto_increment=100 comment = '字典数据表';
 
-insert into sys_dict_data values(1,  1,  '男',       '0',       'sys_user_sex',        '',   '',        'Y', '0', 'admin', sysdate(), '', null, '性别男');
-insert into sys_dict_data values(2,  2,  '女',       '1',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别女');
-insert into sys_dict_data values(3,  3,  '未知',     '2',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别未知');
-insert into sys_dict_data values(4,  1,  '显示',     '0',       'sys_show_hide',       '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '显示菜单');
-insert into sys_dict_data values(5,  2,  '隐藏',     '1',       'sys_show_hide',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '隐藏菜单');
-insert into sys_dict_data values(6,  1,  '正常',     '0',       'sys_normal_disable',  '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '正常状态');
-insert into sys_dict_data values(7,  2,  '停用',     '1',       'sys_normal_disable',  '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '停用状态');
-insert into sys_dict_data values(8,  1,  '正常',     '0',       'sys_job_status',      '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '正常状态');
-insert into sys_dict_data values(9,  2,  '暂停',     '1',       'sys_job_status',      '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '停用状态');
-insert into sys_dict_data values(10, 1,  '默认',     'DEFAULT', 'sys_job_group',       '',   '',        'Y', '0', 'admin', sysdate(), '', null, '默认分组');
-insert into sys_dict_data values(11, 2,  '系统',     'SYSTEM',  'sys_job_group',       '',   '',        'N', '0', 'admin', sysdate(), '', null, '系统分组');
-insert into sys_dict_data values(12, 1,  '是',       'Y',       'sys_yes_no',          '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '系统默认是');
-insert into sys_dict_data values(13, 2,  '否',       'N',       'sys_yes_no',          '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '系统默认否');
-insert into sys_dict_data values(14, 1,  '通知',     '1',       'sys_notice_type',     '',   'warning', 'Y', '0', 'admin', sysdate(), '', null, '通知');
-insert into sys_dict_data values(15, 2,  '公告',     '2',       'sys_notice_type',     '',   'success', 'N', '0', 'admin', sysdate(), '', null, '公告');
-insert into sys_dict_data values(16, 1,  '正常',     '0',       'sys_notice_status',   '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '正常状态');
-insert into sys_dict_data values(17, 2,  '关闭',     '1',       'sys_notice_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '关闭状态');
-insert into sys_dict_data values(18, 99, '其他',     '0',       'sys_oper_type',       '',   'info',    'N', '0', 'admin', sysdate(), '', null, '其他操作');
-insert into sys_dict_data values(19, 1,  '新增',     '1',       'sys_oper_type',       '',   'info',    'N', '0', 'admin', sysdate(), '', null, '新增操作');
-insert into sys_dict_data values(20, 2,  '修改',     '2',       'sys_oper_type',       '',   'info',    'N', '0', 'admin', sysdate(), '', null, '修改操作');
-insert into sys_dict_data values(21, 3,  '删除',     '3',       'sys_oper_type',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '删除操作');
-insert into sys_dict_data values(22, 4,  '授权',     '4',       'sys_oper_type',       '',   'primary', 'N', '0', 'admin', sysdate(), '', null, '授权操作');
-insert into sys_dict_data values(23, 5,  '导出',     '5',       'sys_oper_type',       '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '导出操作');
-insert into sys_dict_data values(24, 6,  '导入',     '6',       'sys_oper_type',       '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '导入操作');
-insert into sys_dict_data values(25, 7,  '强退',     '7',       'sys_oper_type',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '强退操作');
-insert into sys_dict_data values(26, 8,  '生成代码', '8',       'sys_oper_type',       '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '生成操作');
-insert into sys_dict_data values(27, 9,  '清空数据', '9',       'sys_oper_type',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '清空操作');
-insert into sys_dict_data values(28, 1,  '成功',     '0',       'sys_common_status',   '',   'primary', 'N', '0', 'admin', sysdate(), '', null, '正常状态');
-insert into sys_dict_data values(29, 2,  '失败',     '1',       'sys_common_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '停用状态');
+insert into sys_dict_data values(1,   1,  '男',       '0',       'sys_user_sex',        '',   '',        'Y', '0', 'admin', sysdate(), '', null, '性别男');
+insert into sys_dict_data values(2,   2,  '女',       '1',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别女');
+insert into sys_dict_data values(3,   3,  '未知',     '2',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别未知');
+insert into sys_dict_data values(4,   1,  '显示',     '0',       'sys_show_hide',       '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '显示菜单');
+insert into sys_dict_data values(5,   2,  '隐藏',     '1',       'sys_show_hide',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '隐藏菜单');
+insert into sys_dict_data values(6,   1,  '正常',     '0',       'sys_normal_disable',  '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '正常状态');
+insert into sys_dict_data values(7,   2,  '停用',     '1',       'sys_normal_disable',  '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '停用状态');
+insert into sys_dict_data values(8,   1,  '正常',     '0',       'sys_job_status',      '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '正常状态');
+insert into sys_dict_data values(9,   2,  '暂停',     '1',       'sys_job_status',      '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '停用状态');
+insert into sys_dict_data values(10,  1,  '默认',     'DEFAULT', 'sys_job_group',       '',   '',        'Y', '0', 'admin', sysdate(), '', null, '默认分组');
+insert into sys_dict_data values(11,  2,  '系统',     'SYSTEM',  'sys_job_group',       '',   '',        'N', '0', 'admin', sysdate(), '', null, '系统分组');
+insert into sys_dict_data values(12,  1,  '是',       'Y',       'sys_yes_no',          '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '系统默认是');
+insert into sys_dict_data values(13,  2,  '否',       'N',       'sys_yes_no',          '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '系统默认否');
+insert into sys_dict_data values(14,  1,  '通知',     '1',       'sys_notice_type',     '',   'warning', 'Y', '0', 'admin', sysdate(), '', null, '通知');
+insert into sys_dict_data values(15,  2,  '公告',     '2',       'sys_notice_type',     '',   'success', 'N', '0', 'admin', sysdate(), '', null, '公告');
+insert into sys_dict_data values(16,  1,  '正常',     '0',       'sys_notice_status',   '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '正常状态');
+insert into sys_dict_data values(17,  2,  '关闭',     '1',       'sys_notice_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '关闭状态');
+insert into sys_dict_data values(18,  99, '其他',     '0',       'sys_oper_type',       '',   'info',    'N', '0', 'admin', sysdate(), '', null, '其他操作');
+insert into sys_dict_data values(19,  1,  '新增',     '1',       'sys_oper_type',       '',   'info',    'N', '0', 'admin', sysdate(), '', null, '新增操作');
+insert into sys_dict_data values(20,  2,  '修改',     '2',       'sys_oper_type',       '',   'info',    'N', '0', 'admin', sysdate(), '', null, '修改操作');
+insert into sys_dict_data values(21,  3,  '删除',     '3',       'sys_oper_type',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '删除操作');
+insert into sys_dict_data values(22,  4,  '授权',     '4',       'sys_oper_type',       '',   'primary', 'N', '0', 'admin', sysdate(), '', null, '授权操作');
+insert into sys_dict_data values(23,  5,  '导出',     '5',       'sys_oper_type',       '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '导出操作');
+insert into sys_dict_data values(24,  6,  '导入',     '6',       'sys_oper_type',       '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '导入操作');
+insert into sys_dict_data values(25,  7,  '强退',     '7',       'sys_oper_type',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '强退操作');
+insert into sys_dict_data values(26,  8,  '生成代码',  '8',       'sys_oper_type',       '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '生成操作');
+insert into sys_dict_data values(27,  9,  '清空数据',  '9',       'sys_oper_type',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '清空操作');
+insert into sys_dict_data values(28,  1,  '成功',     '0',       'sys_common_status',   '',   'primary', 'N', '0', 'admin', sysdate(), '', null, '正常状态');
+insert into sys_dict_data values(29,  2,  '失败',     '1',       'sys_common_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '停用状态');
+INSERT INTO sys_dict_data VALUES(100, 0,  '开启',     '0',       'sys_tenant_status', 'primary','primary','N','0', 'admin', sysdate(), '', null, '租户开启状态');
+INSERT INTO sys_dict_data VALUES(101, 1,  '关闭',     '1',       'sys_tenant_status',   '',  'danger',  'N',  '0', 'admin', sysdate(), '', null, '租户关闭状态');
+INSERT INTO sys_dict_data VALUES(102, 2,  '短信通知',  '1',       'sys_message_type',   '',   'info',    'N',  '0', 'admin', sysdate(), '', null, '');
+INSERT INTO sys_dict_data VALUES(103, 1,  '邮件通知',  '0',       'sys_message_type',   '',   'info',    'N',  '0', 'admin', sysdate(), '', NULL, '');
 
 
 -- ----------------------------
@@ -565,8 +587,9 @@ insert into sys_config values(1, '主框架页-默认皮肤样式名称',     's
 insert into sys_config values(2, '用户管理-账号初始密码',         'sys.user.initPassword',         '123456',        'Y', 'admin', sysdate(), '', null, '初始化密码 123456' );
 insert into sys_config values(3, '主框架页-侧边栏主题',           'sys.index.sideTheme',           'theme-dark',    'Y', 'admin', sysdate(), '', null, '深色主题theme-dark，浅色主题theme-light' );
 insert into sys_config values(4, '账号自助-验证码开关',           'sys.account.captchaEnabled',    'true',          'Y', 'admin', sysdate(), '', null, '是否开启验证码功能（true开启，false关闭）');
-insert into sys_config values(5, '账号自助-是否开启用户注册功能', 'sys.account.registerUser',      'false',         'Y', 'admin', sysdate(), '', null, '是否开启注册用户功能（true开启，false关闭）');
+insert into sys_config values(5, '账号自助-是否开启用户注册功能',   'sys.account.registerUser',      'false',         'Y', 'admin', sysdate(), '', null, '是否开启注册用户功能（true开启，false关闭）');
 insert into sys_config values(6, '用户登录-黑名单列表',           'sys.login.blackIPList',         '',              'Y', 'admin', sysdate(), '', null, '设置登录IP黑名单限制，多个匹配项以;分隔，支持匹配（*通配、网段）');
+INSERT INTO sys_config VALUES(7, '通知管理-通知方式',            'sys.message.type',               'false',         'Y', 'admin', sysdate(), '', null, '是否开启短信通知(开启后会替代所有通知模块)');
 
 
 -- ----------------------------
@@ -757,21 +780,21 @@ CREATE TABLE `sys_tenant` (
 DROP TABLE IF EXISTS `sys_tenant_package`;
 CREATE TABLE `sys_tenant_package` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '套餐编号',
-  `name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '套餐名',
-  `menu_ids` varchar(2048) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联的菜单编号',
-  `status` char(1) CHARACTER SET utf8mb4 NOT NULL COMMENT '角色状态（0正常 1停用）',
-  `del_flag` char(1) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '创建者',
+  `name` varchar(30) NOT NULL COMMENT '套餐名',
+  `menu_ids` varchar(2048) NOT NULL COMMENT '关联的菜单编号',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COLLATE=utf8mb4_unicode_ci COMMENT='租户套餐表';
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='租户套餐表';
 
 -- ----------------------------
 -- Records of sys_tenant_package
 -- ----------------------------
-INSERT INTO `sys_tenant_package` VALUES (18, '基础管理套餐', '1,100,1001,1002,1003,1004,1005,1006,1007,101,1008,1009,1010,1011,1012,103,1017,1018,1019,1020,104,1021,1022,1023,1024,1025,2044,2045,2046,2047,2048,2049,2050,2061,2051,2052,2053,2054,2055,2056,2063,2057,2058,2059,2060', '0', '0', 'admin', '2022-04-08 10:07:31', 'admin', '2022-04-08 10:07:31', '');
-INSERT INTO `sys_tenant_package` VALUES (100, '系统监控套餐', '2,109,1046,1047,1048,2031,2032,2033,2034,2035,2036,2037,2038,2039,2040,2041,2042', '0', '0', 'admin', '2022-04-24 16:28:08', 'admin', '2022-09-11 10:11:12', '');
-INSERT INTO `sys_tenant_package` VALUES (102, '定时任务套餐', '2044,2045,2046,2047,2048,2049,2050,2061,2051,2052,2053,2054,2055,2056,2063,2057,2058,2059,2060', '0', '0', 'admin', '2023-04-14 00:03:55', NULL, NULL, NULL);
+INSERT INTO `sys_tenant_package` VALUES (10, '基础管理套餐', '100,1000,1001,1002,1003,1004,1005,1006,101,1007,1008,1009,1010,1011,1012,103,1016,1017,1018,1019,104,1020,1021,1022,1023,1024,1025,107,1035,1036,1037,1038,1', '0', '0', 'admin', '2022-04-08 10:07:31', 'admin', '2022-04-08 10:07:31', '');
+INSERT INTO `sys_tenant_package` VALUES (11, '系统监控套餐', '2,109,1046,1047,1048', '0', '0', 'admin', '2022-04-24 16:28:08', 'admin', '2022-09-11 10:11:12', '');
+INSERT INTO `sys_tenant_package` VALUES (12, '定时任务套餐', '110,1049,1050,1051,1052,1053,1054,2', '0', '0', 'admin', '2023-04-14 00:03:55', NULL, NULL, NULL);

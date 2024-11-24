@@ -1,14 +1,18 @@
 package com.ruoyi.project.system.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.enums.SpecialCharacter;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 租户管理对象 sys_tenant
@@ -18,7 +22,6 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_tenant")
 public class SysTenant extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +29,7 @@ public class SysTenant extends BaseEntity {
      * 租户编码
      */
     @Excel(name = "租户编码")
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long id;
     /**
      * 租户名称
@@ -52,7 +55,7 @@ public class SysTenant extends BaseEntity {
      * 租户套餐
      */
     @Excel(name = "租户套餐")
-    private Long tenantPackage;
+    private String tenantPackage;
     /**
      * 租赁结束时间
      */
@@ -69,4 +72,11 @@ public class SysTenant extends BaseEntity {
      */
     private String delFlag;
 
+
+    public void setPackageIds(List<Long> packageIds){
+        tenantPackage = StringUtils.join(packageIds, SpecialCharacter.COMMA.getValue());
+    }
+    public List<Long> getPackageIds() {
+        return Arrays.asList(StringUtils.stringToLong(tenantPackage.split(SpecialCharacter.COMMA.getValue().toString())));
+    }
 }

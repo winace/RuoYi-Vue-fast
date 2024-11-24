@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.ruoyi.project.system.domain.SysSimpleMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.constant.Constants;
@@ -77,6 +79,11 @@ public class SysMenuServiceImpl implements ISysMenuService
             menuList = menuMapper.selectMenuListByUserId(menu);
         }
         return menuList;
+    }
+
+    @Override
+    public List<SysSimpleMenu> selectSimpleMenuList() {
+        return menuMapper.selectSimpleMenuList();
     }
 
     /**

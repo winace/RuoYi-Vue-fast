@@ -1,6 +1,7 @@
 package com.ruoyi.project.monitor.domain;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseTenantEntity;
 import lombok.Data;
@@ -15,13 +16,13 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_job_log")
 public class SysJobLog extends BaseTenantEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** ID */
     @Excel(name = "日志序号")
+    @TableId(type = IdType.AUTO)
     private Long jobLogId;
 
     /** 任务名称 */

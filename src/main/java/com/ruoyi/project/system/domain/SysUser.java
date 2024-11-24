@@ -1,5 +1,7 @@
 package com.ruoyi.project.system.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.ruoyi.common.xss.Xss;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel.ColumnType;
@@ -31,6 +33,7 @@ public class SysUser extends BaseTenantEntity {
      * 用户ID
      */
     @Excel(name = "用户序号", cellType = ColumnType.NUMERIC, prompt = "用户编号")
+    @TableId(type = IdType.AUTO)
     private Long userId;
     /**
      * 部门ID
@@ -135,6 +138,15 @@ public class SysUser extends BaseTenantEntity {
      * 角色ID
      */
     private Long roleId;
+
+    /**
+     * 租户租赁截止日期
+     */
+    private Date tenantEndDate;
+    /**
+     * 租户状态
+     */
+    private Integer tenantStatus;
 
 
     public SysUser() {

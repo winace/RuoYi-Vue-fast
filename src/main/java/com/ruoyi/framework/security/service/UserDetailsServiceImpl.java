@@ -2,19 +2,22 @@ package com.ruoyi.framework.security.service;
 
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
+import com.ruoyi.common.enums.UserStatus;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.MessageUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.framework.security.LoginUser;
+import com.ruoyi.project.system.domain.SysUser;
+import com.ruoyi.project.system.service.ISysUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import com.ruoyi.common.enums.UserStatus;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.MessageUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.security.LoginUser;
-import com.ruoyi.project.system.domain.SysUser;
-import com.ruoyi.project.system.service.ISysUserService;
+
+import java.util.Date;
 
 /**
  * 用户验证处理
@@ -47,7 +50,9 @@ public class UserDetailsServiceImpl implements UserDetailsService
                 log.info("登录用户：{} 不存在.", username);
                 throw new ServiceException(MessageUtils.message("user.not.exists"));
             }
-            else if (UserStatus.DELETED.getCode().equals(user.getDelFlag()))
+            //线程塞入租户ID
+            SecurityUtils.setTenantId(user.getTenantId());
+            if (UserStatus.DELETED.getCode().equals(user.getDelFlag()))
             {
                 log.info("登录用户：{} 已被删除.", username);
                 throw new ServiceException(MessageUtils.message("user.password.delete"));
@@ -56,6 +61,12 @@ public class UserDetailsServiceImpl implements UserDetailsService
             {
                 log.info("登录用户：{} 已被停用.", username);
                 throw new ServiceException(MessageUtils.message("user.blocked"));
+            } else if (user.getTenantStatus() != null && UserStatus.DISABLE.getCode().equals(user.getTenantStatus().toString())) {//先查询是否被停用了租户
+                log.info("登录用户：{} 租户已经被停用.", username);
+                throw new ServiceException(MessageUtils.message("tenant.status.error"));
+            } else if (user.getTenantEndDate() != null && user.getTenantEndDate().compareTo(new Date()) < 0) {
+                log.info("登录用户：{} 租户已超过租赁日期.", username);
+                throw new ServiceException(MessageUtils.message("tenant.date.overdue"));
             }
 
             passwordService.validate(user);

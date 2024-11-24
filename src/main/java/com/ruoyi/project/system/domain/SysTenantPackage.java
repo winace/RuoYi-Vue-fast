@@ -1,5 +1,6 @@
 package com.ruoyi.project.system.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
@@ -17,10 +18,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysTenantPackage extends BaseEntity
 {
-
     /** 套餐编号 */
     @Excel(name = "套餐编号")
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long id;
     /** 套餐名 */
     @Excel(name = "套餐名")

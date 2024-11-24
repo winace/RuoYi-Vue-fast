@@ -1,5 +1,7 @@
 package com.ruoyi.project.system.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.ruoyi.common.xss.Xss;
 import com.ruoyi.framework.web.domain.BaseTenantEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -18,6 +20,7 @@ public class SysNotice extends BaseTenantEntity
     private static final long serialVersionUID = 1L;
 
     /** 公告ID */
+    @TableId(type = IdType.AUTO)
     private Long noticeId;
 
     /** 公告标题 */

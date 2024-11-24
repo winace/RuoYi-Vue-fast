@@ -1,6 +1,10 @@
 package com.ruoyi.project.system.controller;
 
 import java.util.List;
+
+import com.ruoyi.framework.web.domain.R;
+import com.ruoyi.project.system.domain.SysSimpleMenu;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -42,6 +46,15 @@ public class SysMenuController extends BaseController
     {
         List<SysMenu> menus = menuService.selectMenuList(menu, getUserId());
         return success(menus);
+    }
+
+    @GetMapping("/list-all-simple")
+    @ApiOperation(value = "获取菜单精简信息列表", notes = "只包含被开启的菜单，用于【角色分配菜单】功能的选项。" +
+            "在多租户的场景下，会只返回租户所在套餐有的菜单")
+    public R<List<SysSimpleMenu>> getSimpleMenus() {
+        // 获得菜单列表，只要开启状态的
+        List<SysSimpleMenu> menus = menuService.selectSimpleMenuList();
+        return ok(menus);
     }
 
     /**
