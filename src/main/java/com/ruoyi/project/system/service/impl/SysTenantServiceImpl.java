@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Sets;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.ServiceException;
@@ -20,7 +21,6 @@ import com.ruoyi.project.system.domain.*;
 import com.ruoyi.project.system.mapper.*;
 import com.ruoyi.project.system.service.ISysTenantService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -138,17 +139,25 @@ public class SysTenantServiceImpl implements ISysTenantService {
         //创建租户
         sysTenantMapper.insert(sysTenant);
         //租户创建完成后 开始创建相关基础数据
-        TenantUtils.execute(sysTenant.getId(), () -> {
-            //创建默认部门--部门默认名称以租户名称
-            Long deptId = createDept(sysTenant);
-            //创建默认岗位--岗位默认为董事长
-            Long postId = createPost(sysTenant.getUserName());
-            //创建默认角色--角色默认为租户名称+管理员
-            Long roleId = createRole(sysTenant);
-            //创建默认账号
-            createUser(sysTenant, deptId, postId, roleId);
-        });
+        TenantUtils.execute(sysTenant.getId(), () -> createAccount(sysTenant));
         return true;
+    }
+
+    /**
+     * 创建租户对应 最高管理员 账号信息
+     *
+     * @param sysTenant 租户信息
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void createAccount(SysTenant sysTenant) {
+        //创建默认部门--部门默认名称以租户名称
+        Long deptId = createDept(sysTenant);
+        //创建默认岗位--岗位默认为董事长
+        Long postId = createPost(sysTenant.getUserName());
+        //创建默认角色--角色默认为租户名称+管理员
+        Long roleId = createRole(sysTenant);
+        //创建默认账号
+        createUser(sysTenant, deptId, postId, roleId);
     }
 
     private void createUser(SysTenant sysTenant, Long deptId, Long postId, Long roleId) {
@@ -209,7 +218,7 @@ public class SysTenantServiceImpl implements ISysTenantService {
     //目前为多套餐(套餐需要足够细-单一模块，套餐一般情况下，不可变更),跟租户绑定,解耦防止套餐变动影响多个租户
     private void createRoleMenu(SysTenant sysTenant, SysRole role) {
         List<SysTenantPackage> packageList = sysTenantPackageMapper.selectBatchIds(sysTenant.getPackageIds());
-        List<String> subMenus = Lists.newArrayList();
+        Set<String> subMenus = Sets.newLinkedHashSet();
         for (SysTenantPackage tenantPackage : packageList) {
             subMenus.addAll(Arrays.asList(tenantPackage.getMenuIds().split(",")));
         }

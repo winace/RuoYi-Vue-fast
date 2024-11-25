@@ -1,6 +1,7 @@
 package com.ruoyi.common.utils.msg;
 
 
+import com.ruoyi.common.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,6 @@ public class EmailUtilTest {
 
     @Test
     public void sendSimpleMail() {
-//        emailUtil.sendSimpleMail("test", "正在测试邮件配置" + DateUtils.getTime(), "15991262961@163.com");
+        emailUtil.sendSimpleMail("test", "正在测试邮件配置" + DateUtils.getTime(), "15991262961@163.com");
     }
 }

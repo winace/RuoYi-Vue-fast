@@ -758,7 +758,7 @@ CREATE TABLE `sys_tenant` (
   `user_name` varchar(20) DEFAULT NULL COMMENT '管理员账号',
   `user_phone` varchar(20) DEFAULT NULL COMMENT '手机号码',
   `user_email` varchar(200) DEFAULT NULL COMMENT '邮箱地址',
-  `tenant_package` bigint(20) DEFAULT NULL COMMENT '租户套餐',
+  `tenant_package` varchar(510) DEFAULT NULL COMMENT '租户套餐',
   `tenant_time` datetime DEFAULT NULL COMMENT '租赁结束时间',
   `status` char(1) NOT NULL DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
   `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
