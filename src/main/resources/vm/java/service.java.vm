@@ -3,10 +3,11 @@ package ${packageName}.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import ${packageName}.domain.${ClassName};
+
 #if($table.tree)
 import java.util.List;
 #end
-import ${packageName}.domain.${ClassName};
 
 /**
  * ${functionName} 业务接口

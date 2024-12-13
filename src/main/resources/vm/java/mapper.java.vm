@@ -3,12 +3,13 @@ package ${packageName}.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-#if($table.tree)
-import java.util.List;
-#end
 import ${packageName}.domain.${ClassName};
 #if($table.sub)
 import ${packageName}.domain.${subClassName};
+#end
+
+#if($table.tree)
+import java.util.List;
 #end
 
 /**
@@ -24,7 +25,7 @@ public interface ${ClassName}Mapper extends BaseMapper<${ClassName}> {
      *
      * @param pageDto 分页参数
      * @param ${className} ${functionName}
-     * @return ${functionName}集合
+     * @return ${functionName}分页数据
      */
     IPage<${ClassName}> selectDataPage(Page<${ClassName}> pageDto, ${ClassName} ${className});
 #elseif($table.tree)

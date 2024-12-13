@@ -1,21 +1,24 @@
 package ${packageName}.service.impl;
 
+#if($table.crud || $table.sub)
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+#end
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-#if($table.tree)
-import java.util.List;
-#end
 import org.springframework.stereotype.Service;
-#if($table.sub)
-import java.util.ArrayList;
-import com.zoneway.common.utils.StringUtils;
-import org.springframework.transaction.annotation.Transactional;
-import ${packageName}.domain.${subClassName};
-#end
 import ${packageName}.mapper.${ClassName}Mapper;
 import ${packageName}.domain.${ClassName};
 import ${packageName}.service.I${ClassName}Service;
+#if($table.sub)
+import com.ruoyi.common.utils.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
+import ${packageName}.domain.${subClassName};
+import java.util.ArrayList;
+#end
+
+#if($table.tree)
+import java.util.List;
+#end
 
 /**
  * ${functionName} 业务实现
@@ -25,13 +28,12 @@ import ${packageName}.service.I${ClassName}Service;
  */
 @Service
 public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${ClassName}> implements I${ClassName}Service {
-#if($table.crud || $table.sub)
     @Override
+#if($table.crud || $table.sub)
     public IPage<${ClassName}> queryPage(Page<${ClassName}> pageDto, ${ClassName} ${className}) {
         return baseMapper.selectDataPage(pageDto, ${className});
     }
 #elseif($table.tree)
-    @Override
     public List<${ClassName}> queryList(${ClassName} ${className}) {
         return baseMapper.select${ClassName}List(${className});
     }

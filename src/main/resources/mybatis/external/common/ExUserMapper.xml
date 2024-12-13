@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.external.common.mapper.ExUserMapper">
+
+    <sql id="selectExUserVo">
+        select openid, unionid, phone, nick_name, avatar, gender, country, province, city, u.app_id, func_ids,
+            u.create_by, u.create_time, u.update_by, u.update_time, u.remark, u.tenant_id,
+            ac.name app_name, group_concat(mf.name)func_names
+        from ex_user u
+        left join ex_app_cfg ac on u.app_id=ac.app_id
+        left join ex_module_func mf on find_in_set(mf.id,u.func_ids)
+    </sql>
+
+    <select id="selectDataPage"
+            resultType="com.ruoyi.project.external.common.vo.ExUserVo">
+        <include refid="selectExUserVo"/>
+        <where>
+            <if test="user.phone != null  and user.phone != ''"> and phone=#{user.phone}</if>
+            <if test="user.nickName != null  and user.nickName != ''"> and nick_name like concat('%', #{user.nickName}, '%')</if>
+            <if test="user.gender != null "> and gender=#{user.gender}</if>
+            <if test="user.appId != null  and user.appId != ''"> and app_id=#{user.appId}</if>
+        </where>
+        group by openid
+    </select>
+
+</mapper>

@@ -1,17 +1,17 @@
 package ${packageName}.domain;
 
+import com.ruoyi.framework.aspectj.lang.annotation.Excel;
+#if($table.crud || $table.sub)
+import com.ruoyi.framework.web.domain.BaseIdEntity;
+#elseif($table.tree)
+import com.ruoyi.framework.web.domain.TreeEntity;
+#end
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 #foreach ($import in $importList)
 import ${import};
-#end
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import com.zoneway.framework.aspectj.lang.annotation.Excel;
-#if($table.crud || $table.sub)
-import com.zoneway.framework.web.domain.BaseIdEntity;
-#elseif($table.tree)
-import com.zoneway.framework.web.domain.TreeEntity;
 #end
 
 /**
@@ -22,6 +22,7 @@ import com.zoneway.framework.web.domain.TreeEntity;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@ApiModel("${functionName}")
 #if($table.crud || $table.sub)
 #set($Entity="BaseIdEntity")
 #elseif($table.tree)
@@ -32,6 +33,7 @@ public class ${ClassName} extends ${Entity} {
 #foreach ($column in $columns)
 #if(!$table.isSuperColumn($column.javaField))
     /** $column.columnComment */
+    @ApiModelProperty("$column.columnComment")
 #if($column.list)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
@@ -49,7 +51,6 @@ public class ${ClassName} extends ${Entity} {
 #end
 #end
     private $column.javaType $column.javaField;
-
 #end
 #end
 #if($table.sub)
@@ -57,21 +58,4 @@ public class ${ClassName} extends ${Entity} {
     private List<${subClassName}> ${subclassName}List;
 
 #end
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-#foreach ($column in $columns)
-#if($column.javaField.length() > 2 && $column.javaField.substring(1,2).matches("[A-Z]"))
-#set($AttrName=$column.javaField)
-#else
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-#end
-            .append("${column.javaField}", get${AttrName}())
-#end
-#if($table.sub)
-            .append("${subclassName}List", get${subClassName}List())
-#end
-            .toString();
-    }
 }

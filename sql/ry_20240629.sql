@@ -170,7 +170,8 @@ create table sys_menu (
 insert into sys_menu values('1', '系统管理', '0', '1', 'system',           null, '', '', 1, 0, 'M', '0', '0', '', 'system',   'admin', sysdate(), '', null, '系统管理目录');
 insert into sys_menu values('2', '系统监控', '0', '2', 'monitor',          null, '', '', 1, 0, 'M', '0', '0', '', 'monitor',  'admin', sysdate(), '', null, '系统监控目录');
 insert into sys_menu values('3', '系统工具', '0', '3', 'tool',             null, '', '', 1, 0, 'M', '0', '0', '', 'tool',     'admin', sysdate(), '', null, '系统工具目录');
-insert into sys_menu values('4', '若依官网', '0', '4', 'http://ruoyi.vip', null, '', '', 0, 0, 'M', '0', '0', '', 'guide',    'admin', sysdate(), '', null, '若依官网地址');
+insert into sys_menu values('4', '外部应用', '0', '3', 'external',         null, '', '', 1, 0, 'M', '0', '0', '', 'external', 'admin', sysdate(), '', null, '外部应用目录');
+insert into sys_menu values('5', '若依官网', '0', '4', 'http://ruoyi.vip', null, '', '', 0, 0, 'M', '0', '0', '', 'guide',    'admin', sysdate(), '', null, '若依官网地址');
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理', '1',   '1', 'user',       'system/user/index',        '', '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, '用户管理菜单');
 insert into sys_menu values('101',  '角色管理', '1',   '2', 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, '角色管理菜单');
@@ -267,6 +268,7 @@ insert into sys_menu values('1057', '生成删除', '116', '3', '#', '', '', '',
 insert into sys_menu values('1058', '导入代码', '116', '4', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:import',            '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1059', '预览代码', '116', '5', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:preview',           '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1060', '生成代码', '116', '6', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:code',              '#', 'admin', sysdate(), '', null, '');
+
 -- 租户管理
 INSERT INTO sys_menu VALUES('2013', '租户管理', '1',    1, 'tenant', 'system/tenant/index', '', '', 1, 0, 'C', '0', '0', 'system:tenant:list', 'tree', 'admin', sysdate(), '', null, '租户管理菜单');
 INSERT INTO sys_menu VALUES('2014', '租户查询', '2013', 1, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenant:query', '#', 'admin', sysdate(), '', NULL, '');
@@ -281,6 +283,28 @@ INSERT INTO sys_menu VALUES('2021', '套餐新增', '2019', 2, '#', '', '', '', 
 INSERT INTO sys_menu VALUES('2022', '套餐修改', '2019', 3, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenantpackage:edit', '#', 'admin',sysdate(), '', NULL, '');
 INSERT INTO sys_menu VALUES('2023', '套餐删除', '2019', 4, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenantpackage:remove', '#', 'admin',sysdate(), '', NULL, '');
 INSERT INTO sys_menu VALUES('2024', '套餐导出', '2019', 5, '#', '', '', '', 1, 0, 'F', '0', '0', 'system:tenantpackage:export', '#', 'admin',sysdate(), '', NULL, '');
+-- 外部应用配置
+insert into sys_menu values('2025', '应用配置',    '4',    '1', 'appCfg', 'external/common/appCfg/index', '', '', 1, 0, 'C', '0', '0', 'common:appCfg:list',      '#',    'admin', sysdate(), '', null, '外部平台应用配置菜单');
+insert into sys_menu values('2026', '查询', '2025', '1', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:appCfg:query',        '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2027', '新增', '2025', '2', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:appCfg:save',         '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2028', '修改', '2025', '3', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:appCfg:save',         '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2029', '删除', '2025', '4', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:appCfg:remove',       '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2030', '导出', '2025', '5', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:appCfg:export',       '#', 'admin', sysdate(), '', null, '');
+-- 外部应用功能模块
+insert into sys_menu values('2031', '应用功能模块', '4',    '1', 'moduleFunc', 'external/common/moduleFunc/index',  '', '', 1, 0, 'C', '0', '0', 'common:moduleFunc:list',  '#',     'admin', sysdate(), '', null, '外部平台应用功能模块菜单');
+insert into sys_menu values('2032', '查询', '2031', '1', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:moduleFunc:query',        '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2033', '新增', '2031', '2', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:moduleFunc:add',          '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2034', '修改', '2031', '3', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:moduleFunc:edit',         '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2035', '删除', '2031', '4', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:moduleFunc:remove',       '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2036', '导出', '2031', '5', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:moduleFunc:export',       '#', 'admin', sysdate(), '', null, '');
+-- 外部应用用户
+insert into sys_menu values('2037', '应用用户',     '4',    '1', 'exUser',        'external/common/exUser/index',        '', '', 1, 0, 'C', '0', '0', 'common:exUser:list',        '#',    'admin', sysdate(), '', null, '外部平台应用用户菜单');
+insert into sys_menu values('2038', '查询', '2037', '1', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:exUser:query',        '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2039', '新增', '2037', '2', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:exUser:add',          '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2040', '修改', '2037', '3', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:exUser:edit',         '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2041', '删除', '2037', '4', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:exUser:remove',       '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2042', '导出', '2037', '5', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:exUser:export',       '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2043', '功能授权', '2037', '5', '#', '', '', '', 1, 0, 'F', '0', '0', 'common:exUser:grant',       '#', 'admin', sysdate(), '', null, '');
 
 
 -- ----------------------------
@@ -505,6 +529,9 @@ insert into sys_dict_type values(9,   '操作类型', 'sys_oper_type',       '0'
 insert into sys_dict_type values(10,  '系统状态', 'sys_common_status',   '0', 'admin', sysdate(), '', null, '登录状态列表');
 INSERT INTO sys_dict_type VALUES(100, '租户状态', 'sys_tenant_status',   '0', 'admin', sysdate(), '', NULL, '租户状态列表');
 INSERT INTO sys_dict_type VALUES(101, '报警通知', 'sys_message_type',    '0', 'admin', sysdate(), '', NULL, '报警通知列表');
+INSERT INTO sys_dict_type VALUES(102, '外部平台', 'external_platform',   '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_type VALUES(103, '应用类型', 'external_app_type',   '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_type VALUES(104, '消息体数据格式', 'msg_data_format', '0', 'admin', sysdate(), '', NULL, NULL);
 
 
 -- ----------------------------
@@ -530,9 +557,9 @@ create table sys_dict_data
   primary key (dict_code)
 ) engine=innodb auto_increment=100 comment = '字典数据表';
 
-insert into sys_dict_data values(1,   1,  '男',       '0',       'sys_user_sex',        '',   '',        'Y', '0', 'admin', sysdate(), '', null, '性别男');
-insert into sys_dict_data values(2,   2,  '女',       '1',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别女');
-insert into sys_dict_data values(3,   3,  '未知',     '2',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别未知');
+insert into sys_dict_data values(1,   1,  '男',       '1',       'sys_user_sex',        '',   '',        'Y', '0', 'admin', sysdate(), '', null, '性别男');
+insert into sys_dict_data values(2,   2,  '女',       '2',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别女');
+insert into sys_dict_data values(3,   3,  '未知',     '0',       'sys_user_sex',        '',   '',        'N', '0', 'admin', sysdate(), '', null, '性别未知');
 insert into sys_dict_data values(4,   1,  '显示',     '0',       'sys_show_hide',       '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '显示菜单');
 insert into sys_dict_data values(5,   2,  '隐藏',     '1',       'sys_show_hide',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '隐藏菜单');
 insert into sys_dict_data values(6,   1,  '正常',     '0',       'sys_normal_disable',  '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '正常状态');
@@ -563,6 +590,23 @@ INSERT INTO sys_dict_data VALUES(100, 0,  '开启',     '0',       'sys_tenant_s
 INSERT INTO sys_dict_data VALUES(101, 1,  '关闭',     '1',       'sys_tenant_status',   '',  'danger',  'N',  '0', 'admin', sysdate(), '', null, '租户关闭状态');
 INSERT INTO sys_dict_data VALUES(102, 2,  '短信通知',  '1',       'sys_message_type',   '',   'info',    'N',  '0', 'admin', sysdate(), '', null, '');
 INSERT INTO sys_dict_data VALUES(103, 1,  '邮件通知',  '0',       'sys_message_type',   '',   'info',    'N',  '0', 'admin', sysdate(), '', NULL, '');
+INSERT INTO sys_dict_data VALUES(104, 1,  '微信',     'wechat',        'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(105, 2,  '支付宝',    'alipay',       'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(106, 3,  '百度',     'baidu',         'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(107, 4,  '抖音',     'douyin',        'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(108, 5,  '头条',     'toutiao',       'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(109, 6,  '飞书',     'feishu',        'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(110, 7,  'QQ',      'qq',            'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(111, 8,  '快手',     'kuaishou',      'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(112, 9,  '钉钉',     'dingtalk',      'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(113, 10, '淘宝',     'taobao',        'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(114, 11, '360',     'qh360',          'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(115, 12, '京东',     'jd',            'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(116, 13, '小红书',    'xiaohongshu',  'external_platform', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(117, 1,  '小程序',    'miniapp',      'external_app_type', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(118, 2,  '公众号',    'mp',           'external_app_type', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(119, 1,  'JSON', 'JSON',               'msg_data_format', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
+INSERT INTO sys_dict_data VALUES(120, 2,  'XML',  'XML',                'msg_data_format', NULL, 'default', 'N', '0', 'admin', sysdate(), '', NULL, NULL);
 
 
 -- ----------------------------
@@ -768,7 +812,7 @@ CREATE TABLE `sys_tenant` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='租户表';
+) ENGINE=InnoDB AUTO_INCREMENT=1001 COMMENT='租户表';
 
 -- ----------------------------
 -- Records of sys_tenant
@@ -790,7 +834,7 @@ CREATE TABLE `sys_tenant_package` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='租户套餐表';
+) ENGINE=InnoDB AUTO_INCREMENT=101 COMMENT='租户套餐表';
 
 -- ----------------------------
 -- Records of sys_tenant_package
@@ -798,3 +842,72 @@ CREATE TABLE `sys_tenant_package` (
 INSERT INTO `sys_tenant_package` VALUES (10, '基础管理套餐', '100,1000,1001,1002,1003,1004,1005,1006,101,1007,1008,1009,1010,1011,1012,103,1016,1017,1018,1019,104,1020,1021,1022,1023,1024,1025,107,1035,1036,1037,1038,1', '0', '0', 'admin', '2022-04-08 10:07:31', 'admin', '2022-04-08 10:07:31', '');
 INSERT INTO `sys_tenant_package` VALUES (11, '系统监控套餐', '2,109,1046,1047,1048', '0', '0', 'admin', '2022-04-24 16:28:08', 'admin', '2022-09-11 10:11:12', '');
 INSERT INTO `sys_tenant_package` VALUES (12, '定时任务套餐', '110,1049,1050,1051,1052,1053,1054,2', '0', '0', 'admin', '2023-04-14 00:03:55', NULL, NULL, NULL);
+
+
+-- ----------------------------
+-- Table structure for ex_app_cfg
+-- ----------------------------
+DROP TABLE IF EXISTS `ex_app_cfg`;
+CREATE TABLE `ex_app_cfg` (
+  `app_id` varchar(50)  NOT NULL COMMENT '应用appId',
+  `secret` varchar(50)  DEFAULT NULL COMMENT '应用密钥',
+  `token` varchar(100)  DEFAULT NULL COMMENT 'Token(令牌)',
+  `aes_key` varchar(100)  DEFAULT NULL COMMENT 'EncodingAESKey(消息加密密钥)',
+  `msg_data_format` varchar(10)  DEFAULT NULL COMMENT '数据格式',
+  `platform` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '平台',
+  `type` varchar(20)  DEFAULT NULL COMMENT '应用类型(小程序/公众号等)',
+  `create_by` varchar(64)  DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64)  DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500)  DEFAULT NULL COMMENT '备注',
+  `tenant_id` bigint NOT NULL COMMENT '租户ID',
+  PRIMARY KEY (`app_id`),
+  KEY `ex_app_cfg_tenant_id_IDX` (`tenant_id`) USING BTREE
+) ENGINE=InnoDB COMMENT='外部平台用户';
+
+-- ----------------------------
+-- Table structure for ex_user
+-- ----------------------------
+DROP TABLE IF EXISTS `ex_user`;
+CREATE TABLE `ex_user` (
+  `openid` varchar(50)  NOT NULL COMMENT 'openid',
+  `unionid` varchar(50)  DEFAULT NULL COMMENT 'unionid',
+  `phone` varchar(20)  DEFAULT NULL COMMENT '手机号',
+  `nick_name` varchar(50)  DEFAULT NULL COMMENT '昵称',
+  `avatar` varchar(255)  DEFAULT NULL COMMENT '用户头像',
+  `gender` tinyint(1) DEFAULT '0' COMMENT '用户性别',
+  `country` varchar(20)  DEFAULT NULL COMMENT '国家',
+  `province` varchar(20)  DEFAULT NULL COMMENT '省份',
+  `city` varchar(20)  DEFAULT NULL COMMENT '城市',
+  `app_id` varchar(50)  DEFAULT NULL COMMENT '所属应用appId',
+  `func_ids` varchar(200)  DEFAULT NULL COMMENT '可以操作的授权功能模块',
+  `create_by` varchar(64)  DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64)  DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500)  DEFAULT NULL COMMENT '备注',
+  `tenant_id` bigint NOT NULL COMMENT '租户ID',
+  PRIMARY KEY (`openid`),
+  KEY `ex_user_tenant_id_IDX` (`tenant_id`) USING BTREE
+) ENGINE=InnoDB COMMENT='外部平台用户';
+
+-- ----------------------------
+-- Table structure for ex_module_func
+-- ----------------------------
+DROP TABLE IF EXISTS `ex_module_func`;
+CREATE TABLE `ex_module_func` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `code` varchar(50)  DEFAULT NULL COMMENT '编码',
+  `name` varchar(100)  DEFAULT NULL COMMENT '名称',
+  `parent_id` bigint DEFAULT NULL COMMENT '父id',
+  `msg_data_format` varchar(10)  DEFAULT NULL COMMENT '数据格式',
+  `create_by` varchar(64)  DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64)  DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500)  DEFAULT NULL COMMENT '备注',
+  `tenant_id` bigint NOT NULL COMMENT '租户ID',
+  PRIMARY KEY (`id`),
+  KEY `ex_module_func_tenant_id_IDX` (`tenant_id`) USING BTREE
+) ENGINE=InnoDB COMMENT='外部平台需要授权的功能模块';

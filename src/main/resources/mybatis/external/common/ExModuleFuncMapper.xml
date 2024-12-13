@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.external.common.mapper.ExModuleFuncMapper">
+
+    <sql id="selectExModuleFuncVo">
+        select mf.id, mf.code, mf.name, mf.parent_id, mf.ancestors, mf.order_num, mf.app_id, ac.name app_name,
+            mf.create_by, mf.create_time, mf.update_by, mf.update_time, mf.remark, mf.tenant_id
+        from ex_module_func mf
+        left join ex_app_cfg ac on mf.app_id=ac.app_id
+    </sql>
+
+    <select id="selectModuleFuncList" parameterType="com.ruoyi.project.external.common.domain.ExModuleFunc"
+            resultType="com.ruoyi.project.external.common.domain.ExModuleFunc">
+        <include refid="selectExModuleFuncVo"/>
+        <where>
+            <if test="code != null  and code != ''"> and mf.code = #{code}</if>
+            <if test="name != null  and name != ''"> and mf.name like concat('%', #{name}, '%')</if>
+            <if test="parentId != null "> and mf.parent_id = #{parentId}</if>
+            <if test="appId != null  and appId != ''"> and mf.app_id = #{appId}</if>
+        </where>
+    </select>
+
+</mapper>

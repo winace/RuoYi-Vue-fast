@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.external.common.mapper.ExAppCfgMapper">
+
+    <sql id="selectExAppCfgVo">
+        select app_id, name, secret, token, aes_key, msg_data_format, platform, type,
+            create_by, create_time, update_by, update_time, remark, tenant_id
+        from ex_app_cfg
+    </sql>
+
+    <select id="selectDataPage"
+            resultType="com.ruoyi.project.external.common.domain.ExAppCfg">
+        <include refid="selectExAppCfgVo"/>
+        <where>
+            <if test="appCfg.name != null and appCfg.name != ''"> and name like concat('%',#{appCfg.name},'%')</if>
+            <if test="appCfg.platform != null"> and platform=#{appCfg.platform}</if>
+            <if test="appCfg.type != null"> and type=#{appCfg.type}</if>
+        </where>
+    </select>
+
+</mapper>

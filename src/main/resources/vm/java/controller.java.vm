@@ -1,36 +1,39 @@
 package ${packageName}.controller;
 
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.framework.aspectj.lang.annotation.Log;
+import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
+import com.ruoyi.framework.web.controller.BaseController;
+import com.ruoyi.framework.web.domain.R;
+#if($table.crud || $table.sub)
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
+import com.ruoyi.framework.web.page.TableDataInfo;
+import com.ruoyi.framework.web.page.TableSupport;
+#elseif($table.tree)
+#end
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.I${ClassName}Service;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.zoneway.framework.aspectj.lang.annotation.Log;
-import com.zoneway.framework.aspectj.lang.enums.BusinessType;
-import ${packageName}.domain.${ClassName};
-import ${packageName}.service.I${ClassName}Service;
-import com.zoneway.framework.web.controller.BaseController;
-import com.zoneway.framework.web.domain.R;
-import com.zoneway.framework.web.page.PageDomain;
-import com.zoneway.common.utils.poi.ExcelUtil;
-#if($table.crud || $table.sub)
-import com.zoneway.framework.web.page.TableDataInfo;
-#elseif($table.tree)
-#end
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * ${functionName} 控制器
  * 
  * @author ${author}
- * @since  ${datetime}
+ * @since ${datetime}
  */
 @RestController
 @RequestMapping("/${moduleName}/${businessName}")
-public class ${ClassName}Controller extends BaseController
-{
+public class ${ClassName}Controller extends BaseController {
     @Autowired
     private I${ClassName}Service service;
 
@@ -38,8 +41,9 @@ public class ${ClassName}Controller extends BaseController
     @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
     @GetMapping("/list")
 #if($table.crud || $table.sub)
-    public TableDataInfo<${ClassName}> list(PageDomain pageDto, ${ClassName} ${className}) {
-        IPage<${ClassName}> page = service.queryPage(PageDomain.of(pageDto), ${className});
+    public TableDataInfo<${ClassName}> list(${ClassName} ${className}) {
+        Page<${ClassName}> pageDto = TableSupport.getPageDomain().toPage();
+        IPage<${ClassName}> page = service.queryPage(pageDto, ${className});
         return getDataTable(page);
     }
 
@@ -48,7 +52,7 @@ public class ${ClassName}Controller extends BaseController
     @Log(title = "${functionName}", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ${ClassName} ${className}) {
-        Page<${ClassName}> pageDto = PageDomain.of(null);
+        Page<${ClassName}> pageDto = TableSupport.getPageDomain().toPage();
         List<${ClassName}> list = Lists.newArrayList();
         IPage<${ClassName}> page = service.queryPage(pageDto, ${className});
         list.addAll(page.getRecords());

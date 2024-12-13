@@ -5,7 +5,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="${packageName}.mapper.${ClassName}Mapper">
 
     <sql id="select${ClassName}Vo">
-        select#foreach($column in $columns) $column.columnName#if($foreach.count != $columns.size()),#end#end from ${tableName}
+        select#foreach($column in $columns) $column.columnName#if($foreach.count != $columns.size()),#end#end
+        from ${tableName}
     </sql>
 
 #if($table.crud || $table.sub)
@@ -15,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="select${ClassName}List" parameterType="${ClassName}" resultType="${packageName}.domain.${ClassName}">
 #end
         <include refid="select${ClassName}Vo"/>
-        <where>  
+        <where>
 #foreach($column in $columns)
 #set($queryType=$column.queryType)
 #set($javaField=$column.javaField)
@@ -44,5 +45,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #end
         </where>
     </select>
-    
+
 </mapper>

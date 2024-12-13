@@ -26,10 +26,8 @@ public class TreeSelect implements Serializable
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TreeSelect> children;
 
-    public TreeSelect()
-    {
 
-    }
+    public TreeSelect() {}
 
     public TreeSelect(SysDept dept)
     {
