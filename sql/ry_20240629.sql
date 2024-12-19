@@ -817,6 +817,7 @@ CREATE TABLE `sys_tenant` (
 -- ----------------------------
 -- Records of sys_tenant
 -- ----------------------------
+INSERT INTO sys_tenant VALUES(1002, '陕西众维', 'zw', '15991262961', '15991262961@163.com', '10,11,12,101', '2024-12-31 00:00:00', '0', '0', 'admin', NOW(), NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_tenant_package
@@ -839,10 +840,10 @@ CREATE TABLE `sys_tenant_package` (
 -- ----------------------------
 -- Records of sys_tenant_package
 -- ----------------------------
-INSERT INTO `sys_tenant_package` VALUES (10, '基础管理套餐', '100,1000,1001,1002,1003,1004,1005,1006,101,1007,1008,1009,1010,1011,1012,103,1016,1017,1018,1019,104,1020,1021,1022,1023,1024,1025,107,1035,1036,1037,1038,1', '0', '0', 'admin', '2022-04-08 10:07:31', 'admin', '2022-04-08 10:07:31', '');
-INSERT INTO `sys_tenant_package` VALUES (11, '系统监控套餐', '2,109,1046,1047,1048', '0', '0', 'admin', '2022-04-24 16:28:08', 'admin', '2022-09-11 10:11:12', '');
-INSERT INTO `sys_tenant_package` VALUES (12, '定时任务套餐', '110,1049,1050,1051,1052,1053,1054,2', '0', '0', 'admin', '2023-04-14 00:03:55', NULL, NULL, NULL);
-
+INSERT INTO `sys_tenant_package` VALUES (10, '基础管理套餐', '100,1000,1001,1002,1003,1004,1005,1006,101,1007,1008,1009,1010,1011,1012,103,1016,1017,1018,1019,104,1020,1021,1022,1023,1024,1025,107,1035,1036,1037,1038,1', '0', '0', 'admin', NOW(), NULL, NULL, NULL);
+INSERT INTO `sys_tenant_package` VALUES (11, '系统监控套餐', '2,109,1046,1047,1048', '0', '0', 'admin', NOW(), NULL, NULL, NULL);
+INSERT INTO `sys_tenant_package` VALUES (12, '定时任务套餐', '110,1049,1050,1051,1052,1053,1054,2', '0', '0', 'admin', NOW(), NULL, NULL, NULL);
+INSERT INTO sys_tenant_package VALUES(101, '微信对接', '2025,2026,2027,2028,2030,2031,2032,2033,2034,2036,2038,2039,2040,2042,2043,4,2037', '0', '0', 'admin', NOW(), NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ex_app_cfg
@@ -865,6 +866,10 @@ CREATE TABLE `ex_app_cfg` (
   PRIMARY KEY (`app_id`),
   KEY `ex_app_cfg_tenant_id_IDX` (`tenant_id`) USING BTREE
 ) ENGINE=InnoDB COMMENT='外部平台用户';
+
+INSERT INTO ex_app_cfg VALUES('wx8095234d088fb20e', '可复美在线商城', 'ee6c9e470fca3f32d4a27a1f11b86ef9', '2GVvnybOlO5dYZsO', 'B73HYnupuyOeqiOvQBBnJ3gPQjbYC1E83uSRx9Ys3dz', 'JSON', 'wechat', 'miniapp', 'zw', NOW(), 'zw', NOW(), NULL, 1002);
+INSERT INTO ex_app_cfg VALUES('wxab6065836301cebf', '布瑞克领导数据看板小程序', '5cadfa31fd8edcf9498a16b4e647ec5c', '2GVvnybOlO5dYZsO', 'B73HYnupuyOeqiOvQBBnJ3gPQjbYC1E83uSRx9Ys3dz', 'JSON', 'wechat', 'miniapp', 'zw', NOW(), 'zw', NOW(), NULL, 1002);
+INSERT INTO ex_app_cfg VALUES('wxfdb5f3820dcf4e96', '领导数据看板小程序', 'b5c3e77d3cd5841d0a5b1dc75e07addd', '2GVvnybOlO5dYZsO', 'B73HYnupuyOeqiOvQBBnJ3gPQjbYC1E83uSRx9Ys3dz', 'JSON', 'wechat', 'miniapp', 'zw', NOW(), 'zw', NOW(), NULL, 1002);
 
 -- ----------------------------
 -- Table structure for ex_user
@@ -911,3 +916,11 @@ CREATE TABLE `ex_module_func` (
   PRIMARY KEY (`id`),
   KEY `ex_module_func_tenant_id_IDX` (`tenant_id`) USING BTREE
 ) ENGINE=InnoDB COMMENT='外部平台需要授权的功能模块';
+
+INSERT INTO ex_module_func VALUES(1, 'goods', '商品界面', 0, '0', 1, 'wx8095234d088fb20e', 'zw', NOW(), 'zw', , NULL, NULL, 1002);
+INSERT INTO ex_module_func VALUES(2, 'search', '商品搜索', 1, '0,1', 1, 'wx8095234d088fb20e', 'zw', NOW(), 'zw', , NULL, NULL, 1002);
+INSERT INTO ex_module_func VALUES(3, 'detail', '商品详情', 1, '0,1', 2, 'wx8095234d088fb20e', 'zw', NOW(), 'zw', , NULL, NULL, 1002);
+INSERT INTO ex_module_func VALUES(4, 'index', '首页', 0, '0', 1, 'wxfdb5f3820dcf4e96', 'zw', NOW(), 'zw', , NULL, NULL, 1002);
+INSERT INTO ex_module_func VALUES(5, 'region', '大区', 4, '0,4', 1, 'wxfdb5f3820dcf4e96', 'zw', NOW(), 'zw', , NULL, NULL, 1002);
+INSERT INTO ex_module_func VALUES(6, 'store', '门店', 4, '0,4', 2, 'wxfdb5f3820dcf4e96', 'zw', NOW(), 'zw', , NULL, NULL, 1002);
+

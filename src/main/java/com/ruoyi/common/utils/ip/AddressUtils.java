@@ -1,6 +1,6 @@
 package com.ruoyi.common.utils.ip;
 
-import com.alibaba.fastjson2.JSONObject;
+import cn.hutool.json.JSON;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.utils.http.HttpUtil;
 import com.ruoyi.framework.config.RuoYiConfig;
@@ -38,9 +38,9 @@ public class AddressUtils
                 Map<String, Object> params = Maps.newHashMap();
                 params.put("ip", ip);
                 params.put("json", true);
-                JSONObject obj = (JSONObject) HttpUtil.get(IP_URL, params);
-                String region = obj.getString("pro");
-                String city = obj.getString("city");
+                JSON obj = HttpUtil.get(IP_URL, params);
+                String region = obj.getByPath("pro", String.class);
+                String city = obj.getByPath("city", String.class);
                 return String.format("%s %s", region, city);
             }
             catch (Exception e)

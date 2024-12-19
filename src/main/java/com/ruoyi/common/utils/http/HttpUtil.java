@@ -1,13 +1,14 @@
 package com.ruoyi.common.utils.http;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.Method;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.TypeReference;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.enums.SpecialCharacter;
 import com.ruoyi.common.exception.ServiceException;
@@ -24,14 +25,13 @@ import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -77,7 +77,7 @@ public class HttpUtil {
                 if (body instanceof String) {
                     bodyStr = body.toString();
                 } else {
-                    bodyStr = JSON.toJSONString(body);
+                    bodyStr = JSONUtil.toJsonStr(body);
                 }
                 request.body(bodyStr);
             }
@@ -107,11 +107,11 @@ public class HttpUtil {
      * @param body     body
      * @return 返回值
      */
-    public static Object request4Json(Method method, String url,
-                                      Map<String, List<String>> headers,
-                                      Map<String, Object> params,
-                                      Map<String, Object> formData,
-                                      Object body) {
+    public static JSON request4Json(Method method, String url,
+                                    Map<String, List<String>> headers,
+                                    Map<String, Object> params,
+                                    Map<String, Object> formData,
+                                    Object body) {
         HttpResponse response = request(method, url, headers, params, formData, body);
         if (response.isOk()) {
             return covertResponse2Json(response);
@@ -169,14 +169,14 @@ public class HttpUtil {
      * @return response json
      */
     @SuppressWarnings("AlibabaUndefineMagicConstant")
-    private static Object covertResponse2Json(HttpResponse response) {
+    private static JSON covertResponse2Json(HttpResponse response) {
         String responseBody = response.body();
         if (StringUtils.isNotBlank(responseBody)) {
             responseBody = responseBody.trim();
             if (responseBody.startsWith("{")) {
-                return JSON.parseObject(responseBody);
+                return JSONUtil.parseObj(responseBody);
             } else if (responseBody.startsWith("[")) {
-                return JSON.parseArray(responseBody);
+                return JSONUtil.parseArray(responseBody);
             } else {
                 String info = String.format("三方响应：{ statusCode: %d, responseText: %s }", response.getStatus(),
                         responseBody);
@@ -192,7 +192,7 @@ public class HttpUtil {
      * @param url 请求路径
      * @return 返回值
      */
-    public static Object get(String url) {
+    public static JSON get(String url) {
         return request4Json(Method.GET, url, null, null, null, null);
     }
 
@@ -203,7 +203,7 @@ public class HttpUtil {
      * @param param param
      * @return 返回值
      */
-    public static Object get(String url, Map<String, Object> param) {
+    public static JSON get(String url, Map<String, Object> param) {
         return request4Json(Method.GET, url, null, param, null, null);
     }
 
@@ -215,7 +215,7 @@ public class HttpUtil {
      * @param param   param
      * @return 返回值
      */
-    public static Object get(String url, Map<String, String> headers, Map<String, Object> param) {
+    public static JSON get(String url, Map<String, String> headers, Map<String, Object> param) {
         Map<String, List<String>> headerMap = covertHeader(headers);
         return request4Json(Method.GET, url, headerMap, param, null, null);
     }
@@ -227,7 +227,7 @@ public class HttpUtil {
      * @param body body
      * @return 返回值
      */
-    public static Object post(String url, Object body) {
+    public static JSON post(String url, Object body) {
         return request4Json(Method.POST, url, null, null, null, body);
     }
 
@@ -238,7 +238,7 @@ public class HttpUtil {
      * @param form form
      * @return 返回值
      */
-    public static Object postForm(String url, Object form) {
+    public static JSON postForm(String url, Object form) {
         Map<String, List<String>> headerMap = new HashMap<>(0);
         headerMap.put("Content-Type", Collections.singletonList("application/x-www-form-urlencoded"));
         Map<String, Object> formMap = BeanUtil.beanToMap(form);
@@ -253,7 +253,7 @@ public class HttpUtil {
      * @param body   body
      * @return 返回值
      */
-    public static Object post(String url, Map<String, Object> params, Object body) {
+    public static JSON post(String url, Map<String, Object> params, Object body) {
         return request4Json(Method.POST, url, null, params, null, body);
     }
 
@@ -266,7 +266,7 @@ public class HttpUtil {
      * @param body    body
      * @return 返回值
      */
-    public static Object post(String url, Map<String, String> headers, Map<String, Object> params, Object body) {
+    public static JSON post(String url, Map<String, String> headers, Map<String, Object> params, Object body) {
         Map<String, List<String>> headerMap = covertHeader(headers);
         return request4Json(Method.POST, url, headerMap, params, null, body);
     }
@@ -280,7 +280,7 @@ public class HttpUtil {
      * @param body     body
      * @return 返回值
      */
-    public static Object post(String url, Map<String, String> headers, Map<String, Object> params, Map<String, Object> formData, Object body) {
+    public static JSON post(String url, Map<String, String> headers, Map<String, Object> params, Map<String, Object> formData, Object body) {
         Map<String, List<String>> headerMap = covertHeader(headers);
         return request4Json(Method.POST, url, headerMap, params, formData, body);
     }
@@ -301,7 +301,7 @@ public class HttpUtil {
      * @param body body
      * @return 返回值
      */
-    public static Object put(String url, Object body) {
+    public static JSON put(String url, Object body) {
         return request4Json(Method.PUT, url, null, null, null, body);
     }
 
@@ -314,7 +314,7 @@ public class HttpUtil {
      * @param body    body
      * @return 返回值
      */
-    public static Object put(String url, Map<String, String> headers, Map<String, Object> param, Object body) {
+    public static JSON put(String url, Map<String, String> headers, Map<String, Object> param, Object body) {
         Map<String, List<String>> headerMap = covertHeader(headers);
         return request4Json(Method.PUT, url, headerMap, param, null, body);
     }
@@ -326,7 +326,7 @@ public class HttpUtil {
      * @param param param
      * @return 返回值
      */
-    public static Object del(String url, Map<String, Object> param) {
+    public static JSON del(String url, Map<String, Object> param) {
         return request4Json(Method.PUT, url, null, param, null, null);
     }
 
@@ -420,9 +420,9 @@ public class HttpUtil {
      * @param body  body
      * @return 转存位置
      */
-    public static R<JSONObject> downloadImagePath(String url,
-                                                  Map<String, Object> param,
-                                                  Map<String, Object> body) {
+    public static R<JSON> downloadImagePath(String url,
+                                            Map<String, Object> param,
+                                            Map<String, Object> body) {
         R<Object> imageR = downloadImage(url, param, body);
         if (R.isSuccess(imageR)) {
             Object object = imageR.getData();
@@ -433,14 +433,13 @@ public class HttpUtil {
                     String fileUrl = filePath.get();
                     Map<String, Object> formData = new HashMap<>(0);
                     formData.put("file", tempFile);
-                    return ((JSONObject) post(fileUrl, null, null, formData, null))
-                            .to(new TypeReference<R<JSONObject>>() {
-                            }.getType());
+                    return (post(fileUrl, null, null, formData, null))
+                            .toBean(new TypeReference<R<JSON>>() {
+                            });
                 }
                 return R.fail();
             } else {
-                JSONObject jsonObject = (JSONObject) object;
-                return R.ok(jsonObject);
+                return R.ok((JSONObject) object);
             }
         } else {
             return R.fail(imageR.getMsg());
@@ -453,14 +452,14 @@ public class HttpUtil {
      * @param file 文件
      * @return 转存位置
      */
-    public static JSONObject uploadFile(String url, Map<String, String> header, File file) {
+    public static JSON uploadFile(String url, Map<String, String> header, File file) {
         if (file == null || !file.exists() || file.length() == 0) {
             throw new FileException(String.valueOf(HttpStatus.ERROR), new Object[]{"文件为空"});
         }
         header.put("Accept", "application/json");
         Map<String, Object> formData = new HashMap<>(0);
         formData.put("file", file);
-        return (JSONObject) post(url, header, null, formData, null);
+        return post(url, header, null, formData, null);
     }
 
     /**
@@ -470,14 +469,14 @@ public class HttpUtil {
      * @param filePath 文件路径
      * @return 转存位置
      */
-    public static JSONObject uploadFile(String url, Map<String, String> header, String filePath) {
+    public static JSON uploadFile(String url, Map<String, String> header, String filePath) {
         File file = new File(filePath);
         try (InputStream inputStream = Files.newInputStream(file.toPath())) {
             byte[] fileB = new byte[(int) file.length()];
             inputStream.read(fileB);
             inputStream.close();
             HttpResponse response = request(Method.POST, url, covertHeader(header), null, null, fileB);
-            return (JSONObject) covertResponse2Json(response);
+            return covertResponse2Json(response);
         } catch (IOException e) {
             String errMsg = String.format("uploadFile error: %s", e.getMessage());
             log.error(errMsg);
@@ -507,26 +506,34 @@ public class HttpUtil {
      * @return json
      * @throws IOException io异常
      */
-    public static Object covertCbParam(HttpServletRequest request) throws IOException {
+    public static JSON covertCbParam(HttpServletRequest request) throws IOException {
         String bodyParam = IOUtils.toString(request.getInputStream(), StandardCharsets.UTF_8);
-        bodyParam = URLDecoder.decode(bodyParam, "UTF-8");
+        bodyParam = preprocessInputString(bodyParam).trim();
 //        log.info("callback request param: {}", bodyParam);
-        Object object;
-        if (bodyParam.contains("{")) {
-            object = JSON.parseObject(bodyParam);
-        } else if (bodyParam.contains("[")) {
-            object = JSON.parseArray(bodyParam);
-        } else if (bodyParam.contains("=")) {
-            object = new JSONObject(Arrays.stream(bodyParam.split(SpecialCharacter.AMPERSAND.getValue().toString()))
-                    .map(a -> {
-                        int idx = a.indexOf("=");
-                        return new String[]{a.substring(0, idx), a.substring(idx + 1)};
-                    })
+        JSON json;
+        if (bodyParam.contains(SpecialCharacter.EQUALS.getValue().toString())) {
+            json = new JSONObject(Arrays.stream(bodyParam.split(SpecialCharacter.AMPERSAND.getValue().toString()))
+                    .map(param -> param.split(SpecialCharacter.EQUALS.getValue().toString()))
                     .collect(Collectors.toMap(m -> m[0], m -> m[1])));
         } else {
-            object = new JSONObject();
+            json = JSONUtil.parseObj(bodyParam);
         }
-//        log.info("callback param object: {}", object);
-        return object;
+//        log.info("callback param json: {}", json);
+        return json;
+    }
+
+    /**
+     * 预处理url编码
+     */
+    private static String preprocessInputString(String input) throws UnsupportedEncodingException {
+        Pattern pattern = Pattern.compile("%[0-9A-Fa-f]{2}");
+        Matcher matcher = pattern.matcher(input);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String replaceStr = URLDecoder.decode(matcher.group(), "UTF-8");
+            matcher.appendReplacement(sb, replaceStr);
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 }
